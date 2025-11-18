@@ -1,0 +1,25 @@
+<div class="vin">
+    @if (requests().length) { @for (request of requests(); track request.id) {
+    <div class="request">
+        <div class="request__info">
+            <span class="info__time">{{ request.createdAt | date: "dd MMMM yyyy HH:mm" }}</span>
+            <span class="info__vin">{{ request.vin }}</span>
+        </div>
+        <div class="request__user">
+            <span class="user__name">{{ request.name }}</span>
+            <span class="user__phone">{{ request.phone }}</span>
+        </div>
+        <p class="request__details">{{ request.text }}</p>
+    </div>
+    } @if (isShowMoreButtonVisible()) {
+    <ui-button
+        class="content__button"
+        [label]="'Показати ще'"
+        [size]="'small'"
+        [type]="'primary'"
+        (click)="showMore()"
+    ></ui-button>
+    } } @else {
+    <ui-title [title]="'Запитів не знайдено'" [size]="'small'"></ui-title>
+    }
+</div>

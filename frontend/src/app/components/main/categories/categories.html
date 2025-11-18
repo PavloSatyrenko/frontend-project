@@ -1,0 +1,58 @@
+<!-- <div class="categories">
+    @for (category of categories(); track category.id) {
+    <div class="category" (click)="viewAllSubcategories(category.id)">
+        <span class="category__image"></span>
+        <span>{{ category.name }}</span>
+        <ui-button
+            class="subcategories__all-button"
+            [type]="'primary-clear'"
+            [size]="'small'"
+            [icon]="'fa-solid fa-circle-chevron-right'"
+        ></ui-button>
+    </div>
+    }
+</div> -->
+
+<div class="categories">
+    @for (category of categories(); track category.id) {
+    <div class="categories__category category">
+        <img
+            class="category__image"
+            [src]="category.imageName ? `/assets/${category.imageName}.jpg`: '/assets/product.png'"
+            [alt]="category.name"
+        />
+        <ui-title class="category__title" [title]="category.name" [size]="'small'" [theme]="'primary'"></ui-title>
+
+        <div class="category__subcategories">
+            <div class="subcategories__subcategory-list subcategory-list">
+                @for (subcategory of category.subcategories; track subcategory.id) {
+                <ui-link
+                    class="subcategory-list__item"
+                    [routerLink]="['category', subcategory.id]"
+                    [type]="'primary'"
+                    [label]="subcategory.name"
+                ></ui-link>
+                }
+            </div>
+
+            <ui-button
+                class="subcategories__all-button"
+                [type]="'primary'"
+                [size]="'small'"
+                [label]="'Переглянути всі'"
+                (click)="scrollToCategory(category.fragment)"
+            ></ui-button>
+        </div>
+    </div>
+
+    <div class="category_mobile" (click)="viewAllSubcategories(category.id)">
+        <span>{{ category.name }}</span>
+        <ui-button
+            class="subcategories__all-button"
+            [type]="'primary-clear'"
+            [size]="'small'"
+            [icon]="'fa-solid fa-circle-chevron-right'"
+        ></ui-button>
+    </div>
+    }
+</div>

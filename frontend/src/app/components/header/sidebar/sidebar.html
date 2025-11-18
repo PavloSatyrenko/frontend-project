@@ -1,0 +1,79 @@
+<ui-button [icon]="'fa-solid fa-bars'" [size]="'small'" [type]="'primary-clear'" (click)="openSidebar()"></ui-button>
+
+<div [ngClass]="{'sidebar-background_visible': isVisible()}" class="sidebar-background" (click)="closeSidebar()"></div>
+
+<div [ngClass]="{'sidebar_visible': isVisible()}" class="sidebar">
+    <div class="sidebar__header">
+        <ui-logo (click)="closeSidebar()"></ui-logo>
+
+        <span class="custom-cross" (click)="closeSidebar()"></span>
+    </div>
+
+    <div class="sidebar__list sidebar-list">
+        <div class="sidebar-list__user-wrapper">
+            @if (user()) {
+            <div class="sidebar-list__item" (click)="closeSidebar()" [routerLink]="['cabinet', 'profile']">
+                <i class="item__image fa-solid fa-user"></i>
+                <span class="item__text">{{ user()?.name }} {{ user()?.surname }}</span>
+            </div>
+            } @else {
+            <div class="sidebar-list__item" (click)="closeSidebar()" [routerLink]="['auth']">
+                <i class="item__image fa-solid fa-right-to-bracket"></i>
+                <span class="item__text">Вхід / Реєстрація</span>
+            </div>
+
+            <div class="sidebar-list__separator"></div>
+            }
+            <div class="sidebar-list__item" (click)="closeSidebar()" [routerLink]="['cabinet', 'shopping-cart']">
+                <i class="item__image fa-solid fa-shopping-cart"></i>
+                <span class="item__text">
+                    Кошик @if(cartItemCount() > 0) {
+                    <span class="item__badge">({{ cartItemCount() }})</span>
+                    }
+                </span>
+            </div>
+            <div class="sidebar-list__item" (click)="closeSidebar()" [routerLink]="['cabinet', 'favorites']">
+                <i class="item__image fa-solid fa-heart"></i>
+                <span class="item__text">Обране</span>
+            </div>
+
+            @if (user()) {
+            <div class="sidebar-list__item" (click)="closeSidebar()" [routerLink]="['cabinet', 'orders']">
+                <i class="item__image fa-solid fa-list"></i>
+                <span class="item__text">Мої замовлення</span>
+            </div>
+            }
+        </div>
+
+        <div class="sidebar-list__separator"></div>
+
+        <div class="sidebar-list__item" (click)="closeSidebar()" [routerLink]="[]">
+            <i class="item__image fa-solid fa-house"></i>
+            <span class="item__text">Головна</span>
+        </div>
+        <div class="sidebar-list__item" (click)="closeSidebar()" [routerLink]="['products']">
+            <i class="item__image fa-solid fa-store"></i>
+            <span class="item__text">Всі товари</span>
+        </div>
+        <div class="sidebar-list__item" (click)="closeSidebar()" [routerLink]="['category']">
+            <span class="item__image">
+                <i class="item__categories"></i>
+            </span>
+            <span class="item__text">Категорії</span>
+        </div>
+        <div class="sidebar-list__item" (click)="scrollToVin()">
+            <i class="item__image fa-solid fa-magnifying-glass"></i>
+            <span class="item__text">Пошук за VIN</span>
+        </div>
+        <div class="sidebar-list__item" (click)="closeSidebar()" [routerLink]="['about']">
+            <i class="item__image fa-solid fa-info"></i>
+            <span class="item__text">Про нас</span>
+        </div>
+    </div>
+
+    @if (user()) {
+    <div class="leave__button">
+        <ui-button [label]="'Вийти з акаунта'" [size]="'small'" [type]="'primary-clear'" (click)="logout()"></ui-button>
+    </div>
+    }
+</div>

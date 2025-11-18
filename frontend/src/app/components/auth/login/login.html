@@ -1,0 +1,38 @@
+<div class="login">
+    <ui-title [title]="'Вхід'" [size]="'medium'" [theme]="'secondary'"></ui-title>
+
+    <form class="login__form">
+        <ui-input
+            [(value)]="phone"
+            [type]="'phone'"
+            [label]="'Телефон'"
+            [isError]="!isFieldValid('phone')"
+            [name]="'phone'"
+            [autocomplete]="'phone'"
+        ></ui-input>
+
+        <ui-input
+            [(value)]="password"
+            [type]="'password'"
+            [label]="'Пароль'"
+            [isError]="!isFieldValid('password')"
+            [name]="'password'"
+            [autocomplete]="'password'"
+        ></ui-input>
+
+        <ui-button
+            class="login-button"
+            [label]="'Увійти'"
+            [size]="'large'"
+            [type]="'primary'"
+            [isFullWidth]="true"
+            (click)="onSubmit()"
+        ></ui-button>
+
+        <div class="login__actions">
+            <!-- <ui-link [label]="'Забули пароль?'" [type]="'primary'" [routerLink]="'/'"></ui-link> -->
+
+            <ui-link [label]="'Зареєструватися'" [type]="'primary'" [routerLink]="['/auth', 'signup']"></ui-link>
+        </div>
+    </form>
+</div>

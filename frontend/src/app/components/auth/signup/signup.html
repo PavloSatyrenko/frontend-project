@@ -1,0 +1,71 @@
+<div class="signup">
+    <ui-title [title]="'Реєстрація'" [size]="'medium'" [theme]="'secondary'"></ui-title>
+
+    <form class="signup__form">
+        <ui-input
+            [(value)]="phone"
+            [type]="'phone'"
+            [label]="'Телефон'"
+            [isError]="!isFieldValid('phone')"
+            [name]="'phone'"
+            [autocomplete]="'phone'"
+        ></ui-input>
+
+        <ui-input
+            [(value)]="name"
+            [label]="'Ім\'я'"
+            [isError]="!isFieldValid('name')"
+            [name]="'firstName'"
+            [autocomplete]="'first-name'"
+        ></ui-input>
+
+        <ui-input
+            [(value)]="surname"
+            [label]="'Прізвище'"
+            [isError]="!isFieldValid('surname')"
+            [name]="'lastName'"
+            [autocomplete]="'family-name'"
+        ></ui-input>
+
+        <ui-input
+            [(value)]="password"
+            [type]="'password'"
+            [label]="'Пароль'"
+            [isError]="!isFieldValid('password')"
+            [name]="'newPassword'"
+            [autocomplete]="'new-password'"
+        ></ui-input>
+
+        <ui-input
+            [(value)]="confirmPassword"
+            [type]="'password'"
+            [label]="'Підтвердження пароля'"
+            [isError]="!isFieldValid('confirmPassword')"
+            [name]="'confirmPassword'"
+            [autocomplete]="'new-password'"
+        ></ui-input>
+
+        <ui-select
+            [(value)]="selectedRole"
+            [label]="'Роль'"
+            [size]="'small'"
+            [theme]="'primary'"
+            [isFullWidth]="true"
+        >
+            <option value="RETAIL">Покупець</option>
+            <option value="WHOLESALE">Оптовий покупець</option>
+            <option value="SERVICE_STATION">Автосервіс</option>
+        </ui-select>
+
+        <ui-button
+            class="signup__button"
+            [label]="'Зареєструватися'"
+            [size]="'large'"
+            [type]="'primary'"
+            [isFullWidth]="true"
+            (click)="onSubmit()"
+        ></ui-button>
+
+        <ui-link [label]="'Увійти'" [type]="'primary'" [routerLink]="['/auth', 'login']"></ui-link>
+    </form>
+</div>

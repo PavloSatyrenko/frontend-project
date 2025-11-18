@@ -1,0 +1,249 @@
+<div class="orders">
+    <div class="orders__filter-wrapper">
+        <div class="filter-wrapper__search">
+            <ui-input
+                class="orders__search-input"
+                [(value)]="searchValue"
+                [label]="'Пошук'"
+                [size]="'small'"
+                [theme]="'primary'"
+                [type]="'text'"
+                [placeholder]="'Номер'"
+                (keydown.enter)="searchClick()"
+            ></ui-input>
+
+            <ui-button
+                class="orders__search-button"
+                [icon]="'fa-solid fa-magnifying-glass'"
+                [type]="'primary-clear'"
+                [size]="'small'"
+                (click)="searchClick()"
+            ></ui-button>
+        </div>
+
+        <div class="filter-wrapper__dropdown">
+            <ui-select
+                class="dropdown availability-dropdown"
+                [(value)]="selectedPeriod"
+                (valueChange)="filterOrders()"
+                [label]="'Період'"
+                [size]="'small'"
+                [theme]="'primary'"
+            >
+                <option value="YEAR">За 2025 рік</option>
+                <option value="HALF_YEAR">За останні 6 місяців</option>
+                <option value="MONTH">За останні 30 днів</option>
+                <option value="ALL">За весь час</option>
+            </ui-select>
+
+            <ui-select
+                class="dropdown availability-dropdown"
+                [(value)]="selectedStatus"
+                (valueChange)="filterOrders()"
+                [label]="'Статус'"
+                [size]="'small'"
+                [theme]="'primary'"
+            >
+                <option [value]="OrderStatusEnum.Cancelled">Скасовано</option>
+                <option [value]="OrderStatusEnum.Accepted">Прийнято</option>
+                <option [value]="OrderStatusEnum.Processing">Обробляється менеджером</option>
+                <option [value]="OrderStatusEnum.Preparing">Готується до відправлення</option>
+                <option [value]="OrderStatusEnum.Sent">Відправлено</option>
+                <option [value]="OrderStatusEnum.Completed">Виконано</option>
+
+                <option value="ALL">Всі</option>
+            </ui-select>
+        </div>
+    </div>
+
+    <div class="orders__table">
+        @if (orders().length) {
+        <div class="table__header">
+            <div class="table__cell table__cell_header cell_small">Номер</div>
+            <div class="table__cell table__cell_header">Дата</div>
+            <div class="table__cell table__cell_header cell_small">Статус</div>
+            <div class="table__cell table__cell_header">Ім'я покупця</div>
+            <div class="table__cell table__cell_header cell_large">Прізвище покупця</div>
+            <div class="table__cell table__cell_header">Телефон покупця</div>
+            <div class="table__cell table__cell_header cell_large">Пошта покупця</div>
+            <div class="table__cell table__cell_header cell_small">Кількість товарів</div>
+            <div class="table__cell table__cell_header">Сума за товари</div>
+            <div class="table__cell table__cell_header cell_large">Доставка</div>
+            <div class="table__cell table__cell_header">Вартість доставки</div>
+            <div class="table__cell table__cell_header">Загальна вартість</div>
+        </div>
+
+        <div class="table__body">
+            @for (order of orders(); track order.id) {
+            <div class="table__row" (click)="chooseOrder(order.id)">
+                <div class="table__cell cell_small">{{ order.number }}</div>
+                <div class="table__cell">{{ order.date | date: "dd MMMM yyyy HH:mm" }}</div>
+                <div class="table__cell cell_small">
+                    @if (order.status == OrderStatusEnum.Completed) {
+                    <span class="order-header__status">Виконано</span>
+                    } @else if (order.status == OrderStatusEnum.Accepted) {
+                    <span class="order-header__status">Прийнято</span>
+                    } @else if (order.status == OrderStatusEnum.Processing) {
+                    <span class="order-header__status">Обробляється менеджером</span>
+                    } @else if (order.status == OrderStatusEnum.Preparing) {
+                    <span class="order-header__status">Готується до відправлення</span>
+                    } @else if (order.status == OrderStatusEnum.Sent) {
+                    <span class="order-header__status">Відправлено</span>
+                    } @else if (order.status == OrderStatusEnum.Cancelled) {
+                    <span class="order-header__status">Скасовано</span>
+                    }
+                </div>
+                <div class="table__cell">{{ order.name }}</div>
+                <div class="table__cell cell_large">{{ order.surname }}</div>
+                <div class="table__cell">{{ order.phone }}</div>
+                <div class="table__cell cell_large">{{ order.email }}</div>
+                <div class="table__cell cell_small">{{ order.productsAmount }}</div>
+                <div class="table__cell">{{ order.productsPrice.toFixed(2) }}</div>
+                <div class="table__cell cell_large delivery__cell">
+                    @if (order.deliveryMethod == DeliveryMethodEnum.Pickup) {
+                    <span>Самовивіз</span>
+                    } @else if (order.deliveryMethod == DeliveryMethodEnum.PostOffice) {
+                    <span>Поштове відділення</span>
+                    <span>Накладна: {{ order.invoice }}</span>
+                    } @else if (order.deliveryMethod == DeliveryMethodEnum.ParcelLocker) {
+                    <span>Поштомат</span>
+                    <span>Накладна: {{ order.invoice }}</span>
+                    } @else if (order.deliveryMethod == DeliveryMethodEnum.Courier) {
+                    <span>Кур'єр</span>
+                    <span>Накладна: {{ order.invoice }}</span>
+                    }
+                </div>
+                <div class="table__cell">{{ order.deliveryPrice.toFixed(2) }}</div>
+                <div class="table__cell">{{ order.totalPrice.toFixed(2) }}</div>
+            </div>
+            }
+        </div>
+        } @else {
+        <ui-title [title]="'Результатів немає'" [size]="'small'"></ui-title>
+        }
+    </div>
+    @if (totalPages() > 1) {
+    <ui-pagination
+        [pageAmount]="totalPages()"
+        [middlePagesAmount]="5"
+        (pageChange)="onPageChange($event)"
+    ></ui-pagination>
+    } @if (selectedOrder() != null) {
+    <div class="order-info-popup">
+        <div class="order-info-popup__header">
+            <div class="header__top-wrapper">
+                <div class="top-wrapper__info">
+                    <div class="info__top-text">
+                        <span class="info__id">№ {{ selectedOrder()!.number }}</span>
+                        <span class="info__date"> {{ selectedOrder()!.date | date: "dd MMMM yyyy HH:mm" }} </span>
+                    </div>
+
+                    <div class="info__status-change">
+                        <ui-select [(value)]="orderStatus" [size]="'small'" [theme]="'primary'">
+                            <option [value]="OrderStatusEnum.Cancelled">Скасовано</option>
+                            <option [value]="OrderStatusEnum.Accepted">Прийнято</option>
+                            <option [value]="OrderStatusEnum.Processing">Обробляється менеджером</option>
+                            <option [value]="OrderStatusEnum.Preparing">Готується до відправлення</option>
+                            <option [value]="OrderStatusEnum.Sent">Відправлено</option>
+                            <option [value]="OrderStatusEnum.Completed">Виконано</option>
+                        </ui-select>
+
+                        <ui-button
+                            [label]="'Змінити статус'"
+                            [type]="'primary'"
+                            [size]="'small'"
+                            (click)="changeOrderStatus()"
+                        ></ui-button>
+                    </div>
+                </div>
+
+                <div class="top-wrapper__total">
+                    <span class="total__text header__header-text">Загальна вартість</span>
+                    <span class="total__price">{{ selectedOrder()!.totalPrice.toFixed(2) }}</span>
+                </div>
+            </div>
+
+            <div class="header__bottom-wrapper">
+                <div class="bottom-wrapper__delivery-wrapper">
+                    <span class="delivery-wrapper__delivery">
+                        <span class="header__header-text">Доставка: </span>
+                        {{ selectedOrder()!.deliveryMethod }}
+                    </span>
+                    <span class="delivery-wrapper__price">
+                        <span class="header__header-text">Вартість доставки: </span>
+                        {{ selectedOrder()!.deliveryPrice.toFixed(2) }}
+                    </span>
+                </div>
+
+                <div class="bottom-wrapper__products-wrapper">
+                    <span class="products-wrapper__amount">
+                        <span class="header__header-text">Кількість товарів: </span>
+                        {{ selectedOrder()!.productsAmount }}
+                    </span>
+                    <span class="products-wrapper__price">
+                        <span class="header__header-text">Сума за товари: </span>
+                        {{ selectedOrder()!.productsPrice.toFixed(2) }}
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <div class="order-info-popup__user">
+            <div class="user__name-wrapper">
+                <span class="name-wrapper__name">
+                    <span class="header__header-text">Ім'я: </span>
+                    {{ selectedOrder()!.name }}
+                </span>
+                <span class="name-wrapper__surname">
+                    <span class="header__header-text">Прізвище: </span>
+                    {{ selectedOrder()!.surname }}
+                </span>
+            </div>
+
+            <div class="user__contact-wrapper">
+                <span class="contact-wrapper__email">
+                    <span class="header__header-text">Пошта: </span>
+                    {{ selectedOrder()!.email }}
+                </span>
+                <span class="contact-wrapper__phone">
+                    <span class="header__header-text">Телефон: </span>
+                    {{ selectedOrder()!.phone }}
+                </span>
+            </div>
+        </div>
+
+        <div class="order-info-popup__product-list">
+            @for (orderItem of selectedOrder()!.orderItems; track orderItem.id) {
+            <div class="product-list__product">
+                <div class="product__title">
+                    <div class="title__top-text">
+                        <span class="title__manufacturer">{{ orderItem.product.manufacturer }}</span>
+                        <span class="title__code">{{ orderItem.product.code }}</span>
+                    </div>
+
+                    <span class="title__name">{{ orderItem.product.name | formatProductName }}</span>
+                </div>
+
+                <div class="product__price">
+                    <span class="price__price-value">
+                        {{ orderItem.priceOut!.toFixed(2) }}
+                        <span class="price-currency">грн</span>
+                        х {{ orderItem.amount }} од.
+                    </span>
+                    <span class="price__total">
+                        {{ getProductTotalPrice(orderItem).toFixed(2) }}
+                        <span class="price-currency">грн</span>
+                    </span>
+                </div>
+            </div>
+            }
+        </div>
+
+        <span class="order-info-popup__cross-button" (click)="clearOrderChoosing()">
+            <i class="fa-solid fa-xmark"></i>
+        </span>
+    </div>
+
+    <div class="order-info-popup__background"></div>
+    }
+</div>

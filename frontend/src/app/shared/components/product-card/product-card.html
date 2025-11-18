@@ -1,0 +1,86 @@
+<!-- @if (type() == "default") { -->
+<div class="product product_type_default" [routerLink]="['/product', product().id]">
+    <div class="product__top-wrapper">
+        <img class="product__image" [src]="productImageUrl()" [alt]="product().name" />
+        @if(product()!.discount) {
+        <span class="product__discount">-{{ product()!.discount }}%</span>
+        }
+
+        <div class="product__information">
+            <span class="product__manufacturer"> {{ product().manufacturer }} </span>
+
+            <span class="product__code">{{ product().code }}</span>
+
+            <span class="product__name"> {{ product().name | formatProductName }} </span>
+        </div>
+    </div>
+
+    <div class="product__bottom-wrapper">
+        <div class="product__meta">
+            <span class="product__price">
+                <span class="price__full-price" [ngClass]="{ 'price__full-price_inactive' : product()!.discount }">
+                    {{ product().price.toFixed(2) }} @if (!product()!.discount) {
+                    <span class="price-currency">грн</span>
+                    }
+                </span>
+                @if (product()!.discount) {
+                <span class="price__discount-price">
+                    {{ discountedPrice().toFixed(2) }}
+                    <span class="price-currency">грн</span>
+                </span>
+                }
+            </span>
+
+            @if (product().availability == AvailabilityEnum.Available) { @if (product().daysBeforeDelivery == 1) {
+            <span class="product__availability"> Відправимо за {{ product().daysBeforeDelivery }} день </span>
+            } @else if (product().daysBeforeDelivery > 1 && product().daysBeforeDelivery < 5) {
+            <span class="product__availability"> Відправимо за {{ product().daysBeforeDelivery }} дні </span>
+            } @else if (product().daysBeforeDelivery >= 5) {
+            <span class="product__availability"> Відправимо за {{ product().daysBeforeDelivery }} днів </span>
+            } @else {
+            <span class="product__availability">Є в наявності</span>
+            } } @else if (product().availability == AvailabilityEnum.NotAvailable) {
+            <span class="product__availability">Немає в наявності</span>
+            }
+        </div>
+
+        <div class="product__buttons">
+            <ui-button
+                [label]="'Купити'"
+                [size]="'small'"
+                [type]="'primary'"
+                [isFullWidth]="true"
+                [isDisabled]="product().availability == AvailabilityEnum.NotAvailable"
+                (click)="buyProduct()"
+            ></ui-button>
+
+            <ui-button
+                [type]="'primary-clear'"
+                [size]="'small'"
+                [icon]="product().isFavorite ? 'fa-solid fa-heart' : 'fa-regular fa-heart'"
+                (click)="toggleFavorite()"
+            ></ui-button>
+        </div>
+    </div>
+</div>
+<!-- } @else if (type() == "long") {
+<div class="product product_type_long">
+    <img class="product__image" src="assets/product.png" alt="Товар 1" />
+
+    <div class="product__details">
+        <div class="product__information">
+            <span class="product__manufacturer">Виробник</span>
+            <span class="product__code">AI-412415</span>
+            <span class="product__name">Товар 1</span>
+        </div>
+
+        <p class="product__price">
+            <span>700₴</span>
+            <span>Є в наявності</span>
+        </p>
+
+        <ui-button [label]="'Купити'" [size]="'small'" [type]="'primary'"></ui-button>
+        <ui-button [icon]="'fa-regular fa-heart'" [size]="'small'" [type]="'primary'"></ui-button>
+    </div>
+</div>
+} -->

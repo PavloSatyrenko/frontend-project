@@ -1,0 +1,54 @@
+.orders {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+@media screen and (max-width: 767px) {
+    .orders {
+        gap: 16px;
+    }
+}
+
+.orders__content {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.content__control {
+    display: flex;
+    gap: 8px;
+    justify-content: space-between;
+}
+
+@media screen and (max-width: 565px) {
+    .content__control {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+
+.control__search-input,
+.control__filter {
+    display: block;
+    width: 260px;
+}
+
+@media screen and (max-width: 565px) {
+    .control__search-input,
+    .control__filter {
+        width: 100%;
+    }    
+}
+
+.filter-wrapper__search {
+    display: flex;
+    gap: 8px;
+}
+
+@media screen and (max-width: 565px) {
+    .filter-wrapper__search {
+        width: 100%;
+    }
+}

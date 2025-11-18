@@ -1,0 +1,238 @@
+<div class="config">
+    <div class="config__container">
+        <ui-title [title]="'Знижки ролей'" [size]="'medium'" [theme]="'primary'"></ui-title>
+
+        @for (item of configRoleDiscount(); track item.id) {
+        <div class="config__item">
+            @if (item.key === UserRoleEnum.Retail) {
+            <span class="config__item-name"> Покупець </span>
+            } @else if (item.key === UserRoleEnum.Wholesale) {
+            <span class="config__item-name"> Оптовий покупець </span>
+            } @else if (item.key === UserRoleEnum.ServiceStation) {
+            <span class="config__item-name"> Автосервіс </span>
+            }
+
+            <div class="config__item-value">
+                @if (configIdEditing() !== item.id) {
+                <span>{{ item.value }}%</span>
+                } @else {
+                <ui-input
+                    [(value)]="roleDiscountValue"
+                    [size]="'small'"
+                    [theme]="'primary'"
+                    [type]="'number'"
+                    [align]="'center'"
+                    [minNumber]="0"
+                    [maxNumber]="500"
+                ></ui-input>
+                }
+            </div>
+
+            <div class="config__item-control">
+                @if (configIdEditing() !== item.id) {
+                <ui-button
+                    [icon]="'fa-solid fa-pen-to-square'"
+                    [type]="'primary-clear'"
+                    [size]="'small'"
+                    (click)="editConfig(item.id, 'roleDiscount')"
+                ></ui-button>
+                } @else {
+                <ui-button
+                    [icon]="'fa-solid fa-check'"
+                    [type]="'primary-clear'"
+                    [size]="'small'"
+                    (click)="openEditConfirmation()"
+                ></ui-button>
+
+                <ui-button
+                    [icon]="'fa-solid fa-xmark'"
+                    [type]="'primary-clear'"
+                    [size]="'small'"
+                    (click)="cancelConfigEditing()"
+                ></ui-button>
+                }
+            </div>
+        </div>
+        }
+    </div>
+
+    <div class="config__container">
+        <ui-title [title]="'Контакти'" [size]="'medium'" [theme]="'primary'"></ui-title>
+
+        @for (item of configContacts(); track item.id) {
+        <div class="config__item">
+            @if (item.key === "firstPhone") {
+            <span class="config__item-name"> Перший номер телефону </span>
+            } @else if (item.key === "secondPhone") {
+            <span class="config__item-name"> Другий номер телефону </span>
+            } @else if (item.key === "email") {
+            <span class="config__item-name"> Електронна пошта </span>
+            }
+
+            <div class="config__item-value">
+                @if (configIdEditing() !== item.id) {
+                <span>{{ item.value }}</span>
+                } @else {
+                <ui-input [(value)]="contactValue" [size]="'small'" [theme]="'primary'"></ui-input>
+                }
+            </div>
+
+            <div class="config__item-control">
+                @if (configIdEditing() !== item.id) {
+                <ui-button
+                    [icon]="'fa-solid fa-pen-to-square'"
+                    [type]="'primary-clear'"
+                    [size]="'small'"
+                    (click)="editConfig(item.id, 'contact')"
+                ></ui-button>
+                } @else {
+                <ui-button
+                    [icon]="'fa-solid fa-check'"
+                    [type]="'primary-clear'"
+                    [size]="'small'"
+                    (click)="openEditConfirmation()"
+                ></ui-button>
+
+                <ui-button
+                    [icon]="'fa-solid fa-xmark'"
+                    [type]="'primary-clear'"
+                    [size]="'small'"
+                    (click)="cancelConfigEditing()"
+                ></ui-button>
+                }
+            </div>
+        </div>
+        }
+    </div>
+
+    <div class="config__container">
+        <ui-title [title]="'Контакти'" [size]="'medium'" [theme]="'primary'"></ui-title>
+
+        @if (configTypeEditing() == "nova") {
+        <div class="config__row config-row config-row_materials">
+            <mat-form-field class="config-row__item" appearance="outline" floatLabel="always">
+                <mat-label>Місто</mat-label>
+                <input
+                    type="text"
+                    placeholder="Введіть місто"
+                    matInput
+                    [formControl]="citiesFormControl"
+                    [matAutocomplete]="cities"
+                />
+            </mat-form-field>
+            <mat-autocomplete
+                #cities="matAutocomplete"
+                [displayWith]="displayCity"
+                (optionSelected)="onCitySelected($event.option.value)"
+            >
+                @for (option of (NPCities$ | async)?.Addresses; track option.Ref) {
+                <mat-option [value]="option"> {{ option.Present }} </mat-option>
+                }
+            </mat-autocomplete>
+
+            <mat-form-field class="config-row__item" appearance="outline">
+                <mat-label>Відділення</mat-label>
+                <input
+                    type="text"
+                    placeholder="Введіть відділення"
+                    matInput
+                    [formControl]="warehousesFormControl"
+                    [matAutocomplete]="warehouses"
+                />
+            </mat-form-field>
+            <mat-autocomplete
+                #warehouses="matAutocomplete"
+                [displayWith]="displayWarehouse"
+                (optionSelected)="onWarehouesSelected($event.option.value)"
+            >
+                @for (option of NPWarehouses$ | async; track option.Ref) {
+                <mat-option [value]="option"> {{ option.Description }} </mat-option>
+                }
+            </mat-autocomplete>
+        </div>
+
+        <div class="config__row config-row">
+            <ui-select
+                class="config-row__select config-row__item"
+                [(value)]="senderContactPersonRef"
+                [label]="'Контактна особа відправника'"
+                [size]="'small'"
+                [theme]="'primary'"
+            >
+                @for (contactPerson of NPContactPersons(); track contactPerson.Ref) {
+                <option [value]="contactPerson.Ref">
+                    {{ `${contactPerson.LastName} ${contactPerson.FirstName} ${contactPerson.MiddleName}` }}
+                </option>
+                }
+            </ui-select>
+
+            <ui-input
+                class="config-row__item"
+                [(value)]="senderPhone"
+                [label]="'Телефон відправника'"
+                [type]="'phone'"
+                [size]="'small'"
+            ></ui-input>
+        </div>
+
+        <div class="config__row config-row">
+            <ui-button [label]="'Зберегти конфіг нової пошти'" [size]="'small'" (click)="saveConfig('nova')"></ui-button>
+
+            <ui-button [label]="'Скасувати зміни'" [type]="'primary-line'" [size]="'small'" (click)="cancelConfigEditing()"></ui-button>
+        </div>
+
+        } @else { @for (item of configNova(); track item.id) { @if (item.key === "cityName") {
+        <div class="config__item config-item-nova">
+            <span class="config__item-name">Місто відправника</span>
+            <span class="config__item-value">{{ item.value }}</span>
+        </div>
+        } @else if (item.key === "warehouseName") {
+        <div class="config__item config-item-nova">
+            <span class="config__item-name">Відділення відправника</span>
+            <span class="config__item-value">{{ item.value }}</span>
+        </div>
+        } @else if (item.key === "contactPersonFullName") {
+        <div class="config__item config-item-nova">
+            <span class="config__item-name">Контактна особа відправника</span>
+            <span class="config__item-value">{{ item.value }}</span>
+        </div>
+        } @else if (item.key === "senderPhone") {
+        <div class="config__item config-item-nova">
+            <span class="config__item-name">Телефон відправника</span>
+            <span class="config__item-value">{{ item.value }}</span>
+        </div>
+        } }
+        <ui-button [label]="'Змінити конфіг нової пошти'" [size]="'small'" (click)="editConfig('', 'nova')"></ui-button>
+        }
+    </div>
+
+    @if (isEditConfirmationVisible()) {
+    <div class="config__popup">
+        <div class="popup__background"></div>
+
+        <div class="popup__card">
+            <div class="card__confirm-message">
+                <span class="confirm-message__text">Підтвердіть зміну</span>
+            </div>
+
+            <div class="card__actions">
+                <ui-button
+                    [label]="'Відмінити'"
+                    [type]="'primary-line'"
+                    [size]="'small'"
+                    (click)="cancelConfigEditing()"
+                ></ui-button>
+
+                <ui-button
+                    [label]="'Зберегти'"
+                    [type]="'primary'"
+                    [size]="'small'"
+                    (click)="saveConfig(configTypeEditing())"
+                ></ui-button>
+            </div>
+        </div>
+    </div>
+    }
+
+    <span class="hidden" (click)="addDefaultConfig()">default config +</span>
+</div>

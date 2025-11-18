@@ -1,0 +1,69 @@
+<ui-button
+    class="menu-open-button"
+    [label]="'Меню'"
+    [icon]="'fa-solid fa-gear'"
+    [size]="'small'"
+    [type]="'primary-clear'"
+    (click)="openMenu()"
+></ui-button>
+
+<div
+    class="menu-background"
+    [ngClass]="{ 'menu-background_visible' : isMenuVisible() }"
+    (click)="closeMenu()"
+></div>
+
+<div [ngClass]="{ 'menu_visible': isMenuVisible() }" class="menu" (click)="closeMenu()">
+    <div class="menu__item close-button-wrapper">
+        <ui-button
+            class="close-button"
+            [icon]="'fa-solid fa-xmark'"
+            [size]="'small'"
+            [type]="'primary-clear'"
+            (click)="closeMenu()"
+        ></ui-button>
+    </div>
+
+    <div
+        class="menu__item"
+        [ngClass]="{'menu__item_selected': selectedPath === 'profile'}"
+        [routerLink]="isUserAuthorized() ? routeTo('profile') : '/auth/login'"
+    >
+        <i class="item__icon fa-solid fa-user"></i>
+        <span class="item__label">Акаунт</span>
+    </div>
+
+    <div
+        class="menu__item"
+        [ngClass]="{'menu__item_selected': selectedPath === 'shopping-cart'}"
+        [routerLink]="routeTo('shopping-cart')"
+    >
+        <i class="item__icon fa-solid fa-cart-shopping"></i>
+        <span class="item__label">Кошик</span>
+    </div>
+
+    <div
+        class="menu__item"
+        [ngClass]="{'menu__item_selected': selectedPath === 'favorites'}"
+        [routerLink]="routeTo('favorites')"
+    >
+        <i class="item__icon fa-solid fa-heart"></i>
+        <span class="item__label">Обране</span>
+    </div>
+
+    <div
+        class="menu__item"
+        [ngClass]="{'menu__item_selected': selectedPath === 'orders'}"
+        [routerLink]="routeTo('orders')"
+    >
+        <i class="item__icon fa-solid fa-list"></i>
+        <span class="item__label">Мої замовлення</span>
+    </div>
+
+    @if(isUserAuthorized()) {
+    <div class="menu__item" (click)="logout()">
+        <i class="item__icon fa-solid fa-circle-chevron-left"></i>
+        <span class="item__label">Вийти</span>
+    </div>
+    }
+</div>

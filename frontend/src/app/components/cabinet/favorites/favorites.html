@@ -1,0 +1,39 @@
+<div class="favorites">
+    <div class="favorites__title">
+        <ui-title [title]="'Обране'" [size]="'large'"></ui-title>
+        <span class="title__amount"> Кількість товарів: {{ products().length }} </span>
+    </div>
+
+    @if (products().length) {
+    <div class="favorites__control">
+        <ui-button
+            class="control__buy-button"
+            [label]="'Купити все'"
+            [size]="'small'"
+            [type]="'primary'"
+            (click)="buyAllFavorites()"
+        ></ui-button>
+
+        <ui-select
+            class="control__filter"
+            [(value)]="sortValue"
+            (valueChange)="sortFavoriteProducts()"
+            [size]="'small'"
+            [theme]="'primary'"
+        >
+            <option value="nameAsc">Назва: від А до Я</option>
+            <option value="nameDesc">Назва: від Я до А</option>
+            <option value="priceAsc">Ціна: від меншої до більшої</option>
+            <option value="priceDesc">Ціна: від більшої до меншої</option>
+        </ui-select>
+    </div>
+    }
+
+    <div class="favorites__products-wrapper">
+        @for (product of products(); track product.id) {
+        <div class="products-wrapper__item">
+            <ui-product-card [(products)]="products" [productId]="product.id"></ui-product-card>
+        </div>
+        }
+    </div>
+</div>

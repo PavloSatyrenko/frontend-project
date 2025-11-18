@@ -1,0 +1,58 @@
+<div class="categories container">
+    <ui-title class="categories__header" [size]="'large'" [title]="'Каталог категорій'" [theme]="'primary'"></ui-title>
+
+    <ui-link
+        class="categories__all-products-link"
+        [routerLink]="['/products']"
+        [icon]="'fa-solid fa-store'"
+        [label]="'Всі товари'"
+        [type]="'primary-line'"
+    ></ui-link>
+
+    <div class="categories__list root-list">
+        @if (categories().length) { @for(category of categories(); track category.id) {
+        <div class="root-list__item root-list-item" #categoryItem [id]="category.fragment">
+            <div class="root-list-item__image-wrapper">
+                <img
+                    class="item__image"
+                    [src]="category.imageName ? `/assets/${category.imageName}.jpg`: '/assets/product.png'"
+                    [alt]="category.name"
+                    [routerLink]="[category.id]"
+                />
+            </div>
+            <div class="root-list-item__sublist-wrapper">
+                <ui-link
+                    class="item-wrapper__title"
+                    [routerLink]="[category.id]"
+                    [label]="category.name"
+                    [type]="'primary-line'"
+                ></ui-link>
+
+                <div class="item-wrapper__sublist">
+                    @for (item of (category.extended ? category.subcategories : category.subcategories!.slice(0, 6));
+                    track item.id) {
+                    <ui-link
+                        class="sublist__item"
+                        [routerLink]="[item.id]"
+                        [label]="item.name"
+                        [type]="'primary-line'"
+                    ></ui-link>
+                    }
+                </div>
+
+                @if (category.subcategories!.length > 6) {
+                <ui-button
+                    class="item-wrapper__button"
+                    [label]="category.extended ? 'Згорнути' : 'Показати ще'"
+                    [size]="'small'"
+                    [type]="'primary-line'"
+                    (click)="extendCategory(category.id)"
+                ></ui-button>
+                }
+            </div>
+        </div>
+        } } @else {
+        <ui-title [title]="'Результатів пошуку немає'" [size]="'small'"></ui-title>
+        }
+    </div>
+</div>

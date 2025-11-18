@@ -1,0 +1,22 @@
+.price {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+@media screen and (max-width: 991px) {
+    .price {
+        padding: 0 20px;
+    }
+}
+
+.price__range {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.range__inputs {
+    display: flex;
+    gap: 8px;
+}

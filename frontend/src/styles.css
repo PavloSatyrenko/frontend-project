@@ -1,0 +1,107 @@
+/* You can add global styles to this file, and also import other style files */
+
+/* Imports */
+
+/* Variables */
+
+:root {
+    --z-index-1: 1010;
+    --z-index-2: 1020;
+    --z-index-header: 1030;
+    --z-index-popup: 1040;
+    --z-index-sidebar: 1050;
+    --z-index-message: 1060;
+
+    --header-height: 90px;
+    --header-main-height: 64px;
+
+    --footer-height: 200px;
+
+    --mobile-menu-height: 64px;
+
+    --primary-color: #1a7fc3;
+    --primary-hover-color: #146499;
+
+    --primary-text-color: #000021;
+    --secondary-text-color: #ffffff;
+    --gray-text-color: #979797;
+
+    --header-background-color: #ffffff;
+
+    --footer-background-color: #003f6a;
+
+    --background-color: #ffffff;
+    --secondary-background-color: #d5e4ed;
+    --background-hover-color: #e1eaf0;
+
+    --border-color: #003f6a;
+
+    --error-color: #ff4d4f;
+    --error-hover-color: #d31e1e;
+
+    --shadow-color-1: #00000030;
+    --shadow-color-2: #00000080;
+
+    --success-background-color: #aeffaf;
+    --info-background-color: #c4e7ff;
+    --error-background-color: #ffb6b7;
+
+    --success-border-color: #379238;
+    --info-border-color: #1a7fc3;
+    --error-border-color: #a41010;
+
+    --disabled-background-color: #f0f5f9;
+    --disabled-text-color: #8da3b5;
+}
+
+@media screen and (max-width: 767px) {
+    :root {
+        --header-height: 50px;
+
+        --footer-height: 340px;
+    }
+}
+
+* {
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+}
+
+html {
+    width: 100%;
+    height: 100%;
+}
+
+body {
+    width: 100%;
+    height: 100%;
+    font-family: Arial, Helvetica, sans-serif;
+    color: var(--primary-text-color);
+    background-color: var(--background-color);
+}
+
+.container {
+    width: 100%;
+    max-width: 1400px;
+    padding-inline: 32px;
+    margin: 0 auto;
+}
+
+@media screen and (max-width: 991px) {
+    .container {
+        padding-inline: 16px;
+    }    
+}
+
+@media screen and (max-width: 767px) {
+    .container {
+        padding-inline: 12px;
+    }    
+}
+
+@media screen and (max-width: 565px) {
+    .container {
+        padding-inline: 6px;
+    }    
+}

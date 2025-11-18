@@ -1,0 +1,31 @@
+<div class="price">
+    <ui-title [title]="'Ціна, грн'" [size]="'small'" [theme]="'secondary'"></ui-title>
+
+    <div class="price__range">
+        <div class="range__inputs">
+            <ui-input
+                [(value)]="minPriceValue"
+                [type]="'number'"
+                [maxNumber]="maxPriceValue() - 1"
+                [theme]="'primary'"
+                [size]="'small'"
+                [placeholder]="'Від'"
+            ></ui-input>
+
+            <ui-input
+                [(value)]="maxPriceValue"
+                [type]="'number'"
+                [minNumber]="minPriceValue() + 1"
+                [maxNumber]="maxPrice()"
+                [theme]="'primary'"
+                [size]="'small'"
+                [placeholder]="'До'"
+            ></ui-input>
+        </div>
+
+        <mat-slider>
+            <input matSliderStartThumb [value]="sliderMinPrice()" (input)="onMinPriceChange($event)" />
+            <input matSliderEndThumb [value]="sliderMaxPrice()" (input)="onMaxPriceChange($event)" />
+        </mat-slider>
+    </div>
+</div>

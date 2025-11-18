@@ -1,0 +1,25 @@
+<div class="layout">
+    @if (isHeaderVisible) {
+    <header class="layout__header">
+        <app-header></app-header>
+    </header>
+    }
+
+    <main class="layout__main">
+        <router-outlet></router-outlet>
+    </main>
+
+    @if (isMobileMenuVisible) {
+    <div class="layout__mobile-menu">
+        <app-mobile-menu></app-mobile-menu>
+    </div>
+    }
+
+    @if (isFooterVisible) {
+    <footer class="layout__footer">
+        <app-footer></app-footer>
+    </footer>
+    }
+
+    <ui-message></ui-message>
+</div>

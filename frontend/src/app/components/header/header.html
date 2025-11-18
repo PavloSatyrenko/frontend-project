@@ -1,0 +1,82 @@
+<div class="header">
+    <div class="header__main container">
+        <div class="header__part header__part_left">
+            <header-sidebar></header-sidebar>
+
+            <ui-logo></ui-logo>
+
+            <ui-button
+                [label]="'Каталог'"
+                [icon]="'custom-category'"
+                [size]="'small'"
+                [type]="'primary'"
+                [routerLink]="['category']"
+            ></ui-button>
+        </div>
+
+        <div class="header__part header__part_right">
+            <header-search class="header__search"></header-search>
+
+            <ui-button
+                class="header__vin-button"
+                [label]="'Пошук по VIN'"
+                [size]="'small'"
+                [type]="'primary'"
+                (click)="scrollToVin()"
+            ></ui-button>
+
+            <div class="header__user">
+                <ui-button
+                    [icon]="'fa-solid fa-heart'"
+                    [size]="'small'"
+                    [type]="'primary-clear'"
+                    [routerLink]="['cabinet', 'favorites']"
+                ></ui-button>
+
+                <ui-button
+                    [icon]="'fa-solid fa-circle-user'"
+                    [size]="'small'"
+                    [type]="'primary-clear'"
+                    [routerLink]="['cabinet', 'profile']"
+                ></ui-button>
+
+                <div class="user__cart">
+                    <ui-button
+                        [icon]="'fa-solid fa-cart-shopping'"
+                        [size]="'small'"
+                        [type]="'primary-clear'"
+                        [routerLink]="['cabinet', 'shopping-cart']"
+                    ></ui-button>
+
+                    @if(cartItemCount() > 0) {
+                    <div class="cart__badge">{{ cartItemCount() }}</div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="header__categories categories">
+        <div class="categories__container container">
+            <div class="categories__list category-list">
+                @for(category of categories(); track category.id) {
+                <ui-link
+                    class="category-list__item"
+                    [routerLink]="['/category', category.id]"
+                    [label]="category.name"
+                    [type]="'light-clear'"
+                    [isFullWidth]="true"
+                ></ui-link>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="header_mobile container">
+    <header-sidebar></header-sidebar>
+
+    <ui-logo></ui-logo>
+
+    <header-search></header-search>
+</div>

@@ -1,0 +1,52 @@
+.profile {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    width: 100%;
+}
+
+@media screen and (max-width: 767px) {
+    .profile {
+        gap: 12px;
+        padding: 0 30px 30px;
+    }
+}
+
+.profile__inputs {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.profile-inputs__row {
+    display: flex;
+    gap: 40px;
+}
+
+@media screen and (max-width: 767px) {
+    .profile-inputs__row {
+        flex-direction: column;
+        gap: 12px;
+    }
+}
+
+.password-confirm-button {
+    margin-left: 32px;
+    font-weight: 700;
+    color: var(--primary-color);
+    cursor: pointer;
+}
+
+.profile__save-button {
+    width: 240px;
+    margin-top: 12px;
+}
+
+@media screen and (max-width: 767px) {
+    .profile__save-button {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 24px auto;
+    }
+}

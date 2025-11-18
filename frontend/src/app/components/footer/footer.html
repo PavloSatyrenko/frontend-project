@@ -1,0 +1,32 @@
+<div class="footer">
+    <ui-logo></ui-logo>
+
+    <nav class="footer__navigation navigation">
+        <ui-link [label]="'Основна'" [type]="'light-line'" [routerLink]="['/']" ></ui-link>
+
+        <ui-link [label]="'Про нас'" [type]="'light-line'" [routerLink]="['about']"></ui-link>
+
+        <ui-link [label]="'Категорії'" [type]="'light-line'" [routerLink]="['category']"></ui-link>
+
+        <ui-link [label]="'Пошук по VIN'" [type]="'light-line'" (click)="scrollToVin()"></ui-link>
+    </nav>
+
+    <div class="footer__contact-wrapper">
+        <div class="footer__contact">
+            <ui-title [title]="'Контакти'" [size]="'small'" [theme]="'light'"></ui-title>
+
+            <ui-link [label]="phone1()" [type]="'light-line'" [path]="getTelPath(phone1())" [target]="'_blank'"></ui-link>
+            <ui-link [label]="phone2()" [type]="'light-line'" [path]="getTelPath(phone2())" [target]="'_blank'"></ui-link>
+
+            <ui-link [label]="email()" [type]="'light-line'" [path]="getMailToPath(email())" [target]="'_blank'"></ui-link>
+        </div>
+
+        <div class="footer__schedule">
+            <ui-title [title]="'Графік роботи'" [size]="'small'" [theme]="'light'"></ui-title>
+
+            <span class="schedule__text">Пн-Пт: 9:00 - 18:00</span>
+            <span class="schedule__text">Сб-Нд: 10:00 - 16:00</span>
+        </div>
+    </div>
+
+</div>

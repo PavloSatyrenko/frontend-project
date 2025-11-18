@@ -1,0 +1,35 @@
+<div class="vin">
+    <div class="vin__row">
+        <ui-input
+            [(value)]="name"
+            [placeholder]="'Ім\'я'"
+            [size]="'small'"
+            [theme]="'primary'"
+        ></ui-input>
+        <ui-input
+            [(value)]="phone"
+            [placeholder]="'Телефон'"
+            [size]="'small'"
+            [theme]="'primary'"
+            [type]="'phone'"
+        ></ui-input>
+    </div>
+
+    <ui-input [(value)]="vin" [placeholder]="'VIN'" [size]="'small'" [theme]="'primary'"></ui-input>
+
+    <ui-textarea
+        [(value)]="details"
+        [placeholder]="'Потрібні запчастини'"
+        [size]="'small'"
+        [theme]="'primary'"
+        [isFullWidth]="true"
+    ></ui-textarea>
+
+    <ui-button
+        class="vin__confirm-button"
+        [type]="'primary'"
+        [label]="'Надіслати запит'"
+        [size]="'large'"
+        (click)="sendRequest()"
+    ></ui-button>
+</div>

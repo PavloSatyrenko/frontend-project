@@ -1,0 +1,346 @@
+.products {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.product {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: center;
+    width: 100%;
+    padding: 8px 16px;
+    border: 2px solid var(--primary-color);
+    border-radius: 16px;
+}
+
+.product__info-wrapper,
+.product__price-wrapper {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    width: 100%;
+}
+
+.product__info-wrapper {
+    height: 60px;
+}
+
+.product__information {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+}
+
+.product__details {
+    display: flex;
+    gap: 8px;
+    font-size: 14px;
+}
+
+.product__name {
+    max-height: 40px;
+    overflow: auto;
+}
+
+.product__manufacturer {
+    color: var(--primary-color);
+}
+
+.product__code {
+    color: var(--gray-text-color);
+}
+
+.product__image {
+    height: 100%;
+    aspect-ratio: 1;
+    object-fit: contain;
+}
+
+.product__recommended {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    margin-right: 12px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--secondary-text-color);
+    background-color: var(--primary-color);
+    border-radius: 20px;
+}
+
+.product__availability {
+    font-size: 14px;
+    text-align: right;
+}
+
+.products__filter-wrapper {
+    position: sticky;
+    top: calc(120px - 32px);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding-top: 32px;
+    padding-bottom: 16px;
+    margin-top: -32px;
+    background-color: var(--background-color);
+}
+
+.filter-wrapper__search {
+    display: flex;
+    gap: 8px;
+    align-items: flex-end;
+}
+
+.filter-wrapper__dropdown {
+    display: flex;
+    gap: 16px;
+    justify-content: space-between;
+}
+
+.dropdown {
+    width: 100%;
+}
+
+.products__list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.product__discount-price,
+.product__price {
+    flex-shrink: 0;
+    width: 100px;
+    text-align: center;
+    white-space: nowrap;
+}
+
+.product__discount-input,
+.product__discount {
+    flex-shrink: 0;
+    width: 80px;
+    margin-left: auto;
+    text-align: center;
+}
+
+.product__price {
+    font-weight: 600;
+}
+
+.product__controls {
+    display: flex;
+    flex-shrink: 0;
+    gap: 8px;
+    justify-content: center;
+}
+
+.product__popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: var(--z-index-2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100vw;
+    height: 100vh;
+}
+
+.popup__background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--shadow-color-1);
+}
+
+.popup__card {
+    position: absolute;
+    top: calc(50% + var(--header-height) / 2);
+    left: 50%;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 80%;
+    min-width: 600px;
+    height: 678px;
+    max-height: calc(100vh - var(--header-height) - 12px);
+    padding: 16px 32px;
+    background-color: var(--background-color);
+    border: 2px solid var(--primary-color);
+    border-radius: 16px;
+    box-shadow: 0 0 16px 4px var(--shadow-color-1);
+    transform: translate(-50%, -50%);
+}
+
+.popup__cross {
+    position: absolute;
+    top: 12px;
+    right: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    color: var(--secondary-text-color);
+    cursor: pointer;
+    background-color: var(--gray-text-color);
+    border-radius: 50%;
+}
+
+.popup__title {
+    text-align: center;
+}
+
+.popup__content {
+    display: flex;
+    flex-grow: 1;
+    flex-direction: column;
+    gap: 15px;
+    overflow: hidden;
+}
+
+.content__main {
+    display: flex;
+    flex-grow: 1;
+    gap: 15px;
+    width: 100%;
+    height: 100%;
+}
+
+.popup__settings,
+.popup__search {
+    display: flex;
+    flex-shrink: 0;
+    flex-direction: column;
+    gap: 16px;
+    width: calc(50% - 16px);
+}
+
+.popup__divider {
+    flex-shrink: 0;
+    width: 2px;
+    height: 100%;
+    background-color: var(--shadow-color-1);
+}
+
+.settings__label {
+    font-size: 20px;
+}
+
+.popup__analogs {
+    margin-top: -14px;
+    overflow: auto;
+}
+
+.search__analogs {
+    overflow: auto;
+}
+
+.analog {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    height: 60px;
+    padding: 0 8px;
+}
+
+.search__analog {
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.search__analog_selected {
+    background-color: var(--background-hover-color);
+}
+
+.search__analog:hover {
+    background-color: var(--secondary-background-color);
+}
+
+.analog__image {
+    width: 40px;
+    aspect-ratio: 1;
+}
+
+.analog__info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    width: calc(100% - 148px);
+}
+
+.analog__info_small {
+    width: calc(100% - 202px);
+}
+
+.info__main {
+    display: flex;
+    flex-wrap: wrap;
+    column-gap: 6px;
+}
+
+.main__manufacturer {
+    color: var(--primary-color);
+}
+
+.main__code {
+    color: var(--gray-text-color);
+}
+
+.info__name {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.analog__price {
+    flex-shrink: 0;
+    width: 74px;
+    text-align: right;
+}
+
+.search__loader-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 200px;
+}
+
+.search__loader {
+    width: 60px;
+    aspect-ratio: 1;
+    border: 10px solid var(--secondary-background-color);
+    border-right-color: var(--primary-color);
+    border-radius: 50%;
+    animation: productsLoader 1.5s infinite linear;
+}
+
+@keyframes productsLoader {
+    to {
+        transform: rotate(1turn);
+    }
+}
+
+.search__empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 200px;
+    font-size: 20px;
+}
+
+.popup__actions {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+}

@@ -1,0 +1,167 @@
+<div class="category">
+    <div class="category__container container">
+        @if (isCategoryPage()) {
+        <div class="category__chips">
+            <ui-chips [chips]="categories()"></ui-chips>
+        </div>
+
+        <ui-title
+            class="category__title category__title_with_chips"
+            [title]="categoryTitle()"
+            [size]="'large'"
+            [theme]="'primary'"
+        ></ui-title>
+        } @else if (searchQuery()) {
+        <ui-title
+            class="category__title"
+            [title]="'Результати пошуку за запитом: &#171;' + searchQuery() + '&#187;'"
+            [size]="'large'"
+            [theme]="'primary'"
+        ></ui-title>
+        }
+
+        <div
+            class="category__content"
+            [ngClass]="{ 'category__content_with_title': searchQuery() || isCategoryPage() }"
+        >
+            <aside class="category__filters">
+                <category-price-filter
+                    [(minPriceValue)]="minPriceValue"
+                    (minPriceValueChange)="filterProducts(true)"
+                    [(maxPriceValue)]="maxPriceValue"
+                    (maxPriceValueChange)="filterProducts(true)"
+                    [maxPrice]="maxPrice()"
+                ></category-price-filter>
+
+                <category-filters
+                    [filters]="filters()"
+                    [(selectedFilters)]="selectedFilters"
+                    (selectedFiltersChange)="filterProducts()"
+                    [state]="filtersState()"
+                ></category-filters>
+            </aside>
+
+            <div
+                class="filters-background"
+                [ngClass]="{ 'filters-background_visible' : isFilterBlockVisible() }"
+                (click)="closeMobileFilter()"
+            ></div>
+
+            <aside class="category__filters_mobile filters" [ngClass]="{ 'filters_visible' : isFilterBlockVisible() }">
+                <div class="filters__header filters-block">
+                    <ui-title [title]="'Фільтри'" [size]="'medium'"></ui-title>
+
+                    @if (state() !== "loading") {
+                    <span>Знайдено {{ productsAmount() }} шт.</span>
+                    }
+                </div>
+
+                <div class="filters__body-wrapper">
+                    @if (selectedFilters().length > 0) {
+                    <div class="filters__tags filters-block">
+                        <category-tags [(tags)]="selectedFilters" (tagsChange)="filterProducts()"></category-tags>
+                    </div>
+                    }
+
+                    <div class="filters__main filters-block">
+                        <category-price-filter
+                            [(minPriceValue)]="minPriceValue"
+                            (minPriceValueChange)="filterProducts(true)"
+                            [(maxPriceValue)]="maxPriceValue"
+                            (maxPriceValueChange)="filterProducts(true)"
+                            [maxPrice]="maxPrice()"
+                        ></category-price-filter>
+
+                        <category-filters
+                            [filters]="filters()"
+                            [(selectedFilters)]="selectedFilters"
+                            (selectedFiltersChange)="filterProducts()"
+                            [state]="filtersState()"
+                        ></category-filters>
+                    </div>
+                </div>
+
+                <div class="filters__close-button-wrapper filters-block">
+                    <ui-button
+                        class="filters__close-button"
+                        [label]="'Закрити'"
+                        [size]="'large'"
+                        (click)="closeMobileFilter()"
+                    ></ui-button>
+                </div>
+            </aside>
+
+            <main class="category__main main">
+                <div class="main__header">
+                    <span class="main__amount">
+                        @if (state() !== "loading") { Знайдено {{ productsAmount() }} шт. }
+                    </span>
+
+                    <ui-button
+                        class="main__filter-button"
+                        [label]="'Фільтри'"
+                        [icon]="'fa-solid fa-list'"
+                        [size]="'small'"
+                        [type]="'primary'"
+                        (click)="openMobileFilter()"
+                    ></ui-button>
+
+                    <div class="main__options">
+                        <ui-select
+                            [(value)]="selectedSortingValue"
+                            (valueChange)="filterProducts()"
+                            [size]="'small'"
+                            [theme]="'primary'"
+                        >
+                            <option value="nameAsc">Назва: від А до Я</option>
+                            <option value="nameDesc">Назва: від Я до А</option>
+                            <option value="priceAsc">Ціна: від меншої до більшої</option>
+                            <option value="priceDesc">Ціна: від більшої до меншої</option>
+                        </ui-select>
+                    </div>
+                </div>
+
+                <div class="main__filters">
+                    <category-tags [(tags)]="selectedFilters" (tagsChange)="filterProducts()"></category-tags>
+                </div>
+
+                <div class="main__content">
+                    @if(state() === "loading") {
+                    <div class="main__loader-wrapper">
+                        <div class="main__loader"></div>
+                    </div>
+                    } @else if(state() === "no-results") {
+                    <div class="main__no-results">
+                        <ui-title
+                            [title]="'За вашим запитом нічого не знайдено'"
+                            [size]="'medium'"
+                            [theme]="'primary'"
+                        ></ui-title>
+                    </div>
+                    } @else if(state() === "loaded" || state() === "loading-more") {
+                    <div class="content__list">
+                        @for (product of products(); track product.id) {
+                        <div class="main__item">
+                            <ui-product-card [(products)]="products" [productId]="product.id"></ui-product-card>
+                        </div>
+                        }
+                    </div>
+
+                    @if (isShowMoreButtonVisible() && state() === "loaded") {
+                    <ui-button
+                        class="content__button"
+                        [label]="'Показати ще'"
+                        [size]="'small'"
+                        [type]="'primary'"
+                        (click)="showMore()"
+                    ></ui-button>
+                    } @if (state() === "loading-more") {
+                    <div class="main__loader-wrapper main__loader-wrapper_small">
+                        <div class="main__loader"></div>
+                    </div>
+                    } }
+                </div>
+            </main>
+        </div>
+    </div>
+</div>

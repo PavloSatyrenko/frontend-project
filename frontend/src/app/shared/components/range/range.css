@@ -1,0 +1,29 @@
+.range {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    width: 100%;
+}
+
+@media screen and (max-width: 767px) {
+    .range {
+        width: 130px;
+    }
+}
+
+@media screen and (max-width: 565px) {
+    .range {
+        gap: 2px;
+        width: 116px;
+    }
+}
+
+@media screen and (max-width: 565px) {
+    :host ::ng-deep ui-button {
+        width: 14px;
+    }
+
+    :host ::ng-deep .button {        
+        font-size: 14px !important;
+    }
+}

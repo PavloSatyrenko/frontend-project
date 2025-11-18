@@ -1,0 +1,31 @@
+.admin {
+    position: relative;
+    display: flex;
+    gap: 60px;
+    padding-top: 30px;
+    padding-bottom: 30px;
+}
+
+@media screen and (max-width: 1199px) {
+    .admin {
+        gap: 32px;
+    }    
+}
+
+@media screen and (max-width: 767px) {
+    .admin {
+        padding-top: 16px;
+        padding-bottom: 16px;
+    }
+}
+
+.admin__content {
+    flex-grow: 1;
+    width: calc(100% - 360px);
+}
+
+@media screen and (max-width: 1199px) {
+    .admin__content {
+        width: calc(100% - 282px);
+    }    
+}

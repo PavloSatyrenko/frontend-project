@@ -1,0 +1,38 @@
+.vin {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.request {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    min-height: 80px;
+    padding: 8px 16px;
+    border: 2px solid var(--primary-color);
+    border-radius: 16px;
+}
+
+.request__info,
+.request__user {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.info__time {
+    width: 186px;
+    font-weight: 700;
+}
+
+.request__user {
+    flex-shrink: 0;
+    width: 220px;
+}
+
+.request__details {
+    width: 100%;
+}

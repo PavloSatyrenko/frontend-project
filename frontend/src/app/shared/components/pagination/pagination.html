@@ -1,0 +1,39 @@
+<div class="pagination">
+    <button class="pagination__arrow" [disabled]="isPreviousDisabled()" (click)="previousPage()">
+        <span class="fa-solid fa-chevron-left"></span>
+    </button>
+
+    <button
+        class="pagination__item"
+        [ngClass]="{ 'pagination__item_active': isPreviousDisabled() }"
+        (click)="setPage(1)"
+    >
+        1
+    </button>
+
+    @if (isShowStartDots()) {
+    <i class="fa-solid fa-ellipsis"></i>
+    } @for (page of middlePages(); track page) {
+    <button
+        class="pagination__item"
+        [ngClass]="{ 'pagination__item_active': isPageActive(page) }"
+        (click)="setPage(page)"
+    >
+        {{ page }}
+    </button>
+    } @if (isShowEndDots()) {
+    <i class="fa-solid fa-ellipsis"></i>
+    } @if (pageAmount() > 1) {
+    <button
+        class="pagination__item"
+        [ngClass]="{ 'pagination__item_active': isNextDisabled() }"
+        (click)="setPage(pageAmount())"
+    >
+        {{ pageAmount() }}
+    </button>
+    }
+
+    <button class="pagination__arrow" [disabled]="isNextDisabled()" (click)="nextPage()">
+        <span class="fa-solid fa-chevron-right"></span>
+    </button>
+</div>

@@ -1,0 +1,322 @@
+<div class="products">
+    <div class="products__filter-wrapper">
+        <div class="filter-wrapper__search">
+            <ui-input
+                class="products__search-input"
+                [(value)]="searchValue"
+                [label]="'Пошук'"
+                [size]="'small'"
+                [theme]="'primary'"
+                [type]="'text'"
+                [placeholder]="'Назва, Виробник, Артикул'"
+                (keydown.enter)="searchClick()"
+            ></ui-input>
+
+            <ui-button
+                class="products__search-button"
+                [icon]="'fa-solid fa-magnifying-glass'"
+                [type]="'primary-clear'"
+                [size]="'small'"
+                (click)="searchClick()"
+            ></ui-button>
+        </div>
+
+        <div class="filter-wrapper__dropdown">
+            <ui-select
+                class="dropdown"
+                [(value)]="selectedAvailability"
+                (valueChange)="filterProducts()"
+                [label]="'Наявність'"
+                [size]="'small'"
+                [theme]="'primary'"
+            >
+                <option [value]="AvailabilityEnum.NotAvailable">
+                    Немає в наявності
+                </option>
+
+                <option [value]="AvailabilityEnum.Available">
+                    В наявності
+                </option>
+
+                <option value="ALL">Всі</option>
+            </ui-select>
+
+            <ui-select
+                class="dropdown"
+                [(value)]="selectedDiscountMode"
+                (valueChange)="filterProducts()"
+                [label]="'Знижка'"
+                [size]="'small'"
+                [theme]="'primary'"
+            >
+                <option value="Без знижки">Без знижки</option>
+                <option value="Зі знижкою">Зі знижкою</option>
+                <option value="ALL">Всі</option>
+            </ui-select>
+
+            <ui-select
+                class="dropdown"
+                [(value)]="selectedSortingValue"
+                (valueChange)="filterProducts()"
+                [label]="'Сортування'"
+                [size]="'small'"
+                [theme]="'primary'"
+            >
+                <option value="nameAsc">Назва: від А до Я</option>
+                <option value="nameDesc">Назва: від Я до А</option>
+                <option value="priceAsc">Ціна: від меншої до більшої</option>
+                <option value="priceDesc">Ціна: від більшої до меншої</option>
+            </ui-select>
+        </div>
+    </div>
+
+    @if (products().length) {
+    <div class="products__list">
+        @for (product of products(); track product.id) {
+        <div class="product">
+            <div class="product__info-wrapper">
+                <img
+                    class="product__image"
+                    [src]="getProductImageUrl(product)"
+                    [alt]="product.name"
+                />
+
+                <div class="product__information">
+                    <div class="product__details">
+                        <span class="product__manufacturer">
+                            {{ product.manufacturer }}
+                        </span>
+
+                        <span class="product__code">{{ product.code }}</span>
+                    </div>
+
+                    <span class="product__name">
+                        {{ product.name | formatProductName }}
+                    </span>
+                </div>
+            </div>
+
+            <div class="product__price-wrapper">
+                @if (product.availability == AvailabilityEnum.Available) { @if
+                (product.daysBeforeDelivery == 1) {
+                <span class="product__availability">
+                    Відправка за {{ product.daysBeforeDelivery }} день
+                </span>
+                } @else if (product.daysBeforeDelivery > 1 &&
+                product.daysBeforeDelivery < 5) {
+                <span class="product__availability">
+                    Відправка за {{ product.daysBeforeDelivery }} дні
+                </span>
+                } @else if (product.daysBeforeDelivery >= 5) {
+                <span class="product__availability">
+                    Відправка за {{ product.daysBeforeDelivery }} днів
+                </span>
+                } @else {
+                <span class="product__availability">Є в наявності</span>
+                } } @else if (product.availability ==
+                AvailabilityEnum.NotAvailable) {
+                <span class="product__availability">Немає в наявності</span>
+                }
+
+                <span class="product__price">
+                    {{ product.price.toFixed(2) }}
+                    <span class="product__currency">грн</span>
+                </span>
+
+                @if (product.isRecommended) {
+                <span class="product__recommended">Р</span>
+                }
+
+                <span class="product__discount"> {{ product.discount }}% </span>
+
+                <span class="product__discount-price">
+                    {{ getProductPriceWithDiscount(product) }}
+                    <span class="product__currency">грн</span>
+                </span>
+
+                <div class="product__controls">
+                    <ui-button
+                        [icon]="'fa-solid fa-pen-to-square'"
+                        [type]="'primary-clear'"
+                        [size]="'small'"
+                        (click)="editProduct(product.id)"
+                    ></ui-button>
+                </div>
+            </div>
+        </div>
+        } @if (totalPages() > 1) {
+        <ui-pagination
+            [pageAmount]="totalPages()"
+            [middlePagesAmount]="5"
+            (pageChange)="onPageChange($event)"
+        ></ui-pagination>
+        }
+    </div>
+    } @else {
+    <ui-title [title]="'Результатів немає'" [size]="'small'"></ui-title>
+    } @if (isEditingProduct()) {
+    <div class="product__popup">
+        <div class="popup__background"></div>
+
+        <div class="popup__card">
+            <span class="popup__cross" (click)="closeProductPopup()">
+                <i class="fa-solid fa-xmark"></i>
+            </span>
+
+            <ui-title
+                class="popup__title"
+                [title]="'Редагувати товар'"
+                [size]="'medium'"
+                [theme]="'primary'"
+            ></ui-title>
+
+            <div class="popup__content">
+                <div class="content__main">
+                    <div class="popup__settings">
+                        <ui-input
+                            [label]="'Введіть знижку (%)'"
+                            [placeholder]="'Знижка'"
+                            [(value)]="discountValue"
+                            [size]="'small'"
+                            [theme]="'primary'"
+                            [type]="'number'"
+                            [minNumber]="0"
+                            [maxNumber]="100"
+                        ></ui-input>
+
+                        <ui-checkbox
+                            [label]="'Чи рекомендований товар?'"
+                            [(value)]="isRecommendedValue"
+                        ></ui-checkbox>
+
+                        <span class="settings__label">Аналоги товару:</span>
+
+                        @if(analogsAmount() === 0) {
+                        <span class="settings__empty"
+                            >Виберіть аналоги з каталогу справа</span
+                        >
+                        } @else {
+                        <div class="popup__analogs">
+                            @for(analog of analogsValue(); track analog.id) {
+                            <div class="analog">
+                                <img
+                                    class="analog__image"
+                                    [src]="getProductImageUrl(analog)"
+                                    [alt]="analog.name"
+                                />
+
+                                <div class="analog__info analog__info_small">
+                                    <div class="info__main">
+                                        <span class="main__manufacturer">
+                                            {{ analog.manufacturer }}
+                                        </span>
+
+                                        <span class="main__code">
+                                            {{ analog.code }}
+                                        </span>
+                                    </div>
+
+                                    <span class="info__name">
+                                        {{ analog.name | formatProductName }}
+                                    </span>
+                                </div>
+
+                                <span class="analog__price">
+                                    {{ analog.price.toFixed(2) }}
+                                </span>
+
+                                <ui-button
+                                    [icon]="'fa-solid fa-xmark'"
+                                    [size]="'small'"
+                                    [type]="'primary-clear'"
+                                    (click)="removeAnalog(analog.id)"
+                                ></ui-button>
+                            </div>
+                            }
+                        </div>
+                        }
+                    </div>
+
+                    <div class="popup__divider"></div>
+
+                    <div class="popup__search">
+                        <ui-input
+                            [label]="'Пошук аналогів'"
+                            [(value)]="analogsSearchValue"
+                            [placeholder]="'Пошук товарів...'"
+                            [size]="'small'"
+                            [theme]="'primary'"
+                        />
+
+                        <div class="search__analogs">
+                            @if(analogsState() === "loaded") { @for(analog of
+                            analogsSearchResult(); track analog.id) {
+                            <div
+                                [ngClass]="{'search__analog_selected': isAnalogSelected(analog.id)}"
+                                class="search__analog analog"
+                                (click)="toggleAnalog(analog)"
+                            >
+                                <img
+                                    class="analog__image"
+                                    [src]="getProductImageUrl(analog)"
+                                    [alt]="analog.name"
+                                />
+
+                                <div class="analog__info">
+                                    <div class="info__main">
+                                        <span class="main__manufacturer">
+                                            {{ analog.manufacturer }}
+                                        </span>
+
+                                        <span class="main__code">
+                                            {{ analog.code }}
+                                        </span>
+                                    </div>
+
+                                    <span class="info__name">
+                                        {{ analog.name }}
+                                    </span>
+                                </div>
+
+                                <span class="analog__price">
+                                    {{ analog.price.toFixed(2) }}
+                                </span>
+                            </div>
+                            } } @else if (analogsState() === "enter") {
+                            <span class="search__empty">
+                                Введіть пошуковий запит
+                            </span>
+                            } @else if (analogsState() === "loading") {
+                            <div class="search__loader-wrapper">
+                                <div class="search__loader"></div>
+                            </div>
+                            } @else if (analogsState() === "no-results") {
+                            <span class="search__empty">
+                                Товарів не знайдено
+                            </span>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="popup__actions">
+                <ui-button
+                    [label]="'Відмінити'"
+                    [type]="'primary-line'"
+                    [size]="'small'"
+                    (click)="closeProductPopup()"
+                ></ui-button>
+
+                <ui-button
+                    [label]="'Зберегти'"
+                    [type]="'primary'"
+                    [size]="'small'"
+                    (click)="saveProductChanges()"
+                    [isDisabled]="isPopupSaveButtonDisabled()"
+                ></ui-button>
+            </div>
+        </div>
+    </div>
+    }
+</div>

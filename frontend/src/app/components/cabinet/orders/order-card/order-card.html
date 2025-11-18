@@ -1,0 +1,114 @@
+<div
+    class="order"
+    [ngClass]="{ 'order_extended': isExtended() }"
+    [style.--order-extended-height]="orderExtendedHeight()"
+>
+    <div class="order__header block" (click)="extendCard()">
+        <div class="header__info">
+            <div class="info__top-text">
+                <span class="info__id">№ {{ order().number }}</span>
+                <span class="info__date">{{ order().date | date: "dd MMMM yyyy HH:mm" }}</span>
+            </div>
+            @if (order().status == OrderStatusEnum.Completed) {
+            <span class="order-header__status">Виконано</span>
+            } @else if (order().status == OrderStatusEnum.Accepted) {
+            <span class="order-header__status">Прийнято</span>
+            } @else if (order().status == OrderStatusEnum.Processing) {
+            <span class="order-header__status">Обробляється менеджером</span>
+            } @else if (order().status == OrderStatusEnum.Preparing) {
+            <span class="order-header__status">Готується до відправлення</span>
+            } @else if (order().status == OrderStatusEnum.Sent) {
+            <span class="order-header__status">Відправлено</span>
+            } @else if (order().status == OrderStatusEnum.Cancelled) {
+            <span class="order-header__status">Скасовано</span>
+            }
+        </div>
+
+        <span class="header__price">{{ order().totalPrice.toFixed(2) }} <span class="price-currency">грн</span></span>
+
+        <div class="header__products-wrapper">
+            <div class="product-wrapper__images">
+                @for (orderItem of order().orderItems; track orderItem.id) {
+                <img
+                    class="images__item"
+                    [src]="getProductImageUrl(orderItem.product)"
+                    [alt]="orderItem.product.name"
+                />
+                }
+            </div>
+
+            <i class="header__chevron fa-solid fa-chevron-down" [ngClass]="{ 'chevron_extanded' : isExtended() }"></i>
+        </div>
+    </div>
+
+    <div class="order__extra-header" (click)="extendCard()">
+        <span class="header__price_mobile">
+            {{ order().totalPrice.toFixed(2) }}
+            <span class="price-currency">грн</span>
+        </span>
+
+        <div class="product-wrapper__images_mobile">
+            @for (orderItem of order().orderItems; track orderItem.id) {
+            <img class="images__item" [src]="getProductImageUrl(orderItem.product)" [alt]="orderItem.product.name" />
+            }
+        </div>
+    </div>
+
+    <div class="order__products-wrapper block">
+        @for (orderItem of order().orderItems; track orderItem.id) {
+        <ui-order-product [orderItem]="orderItem"></ui-order-product>
+        }
+    </div>
+
+    <div class="order__delivery block">
+        <span>Доставка</span>
+        @if (order().deliveryMethod == DeliveryMethodEnum.Pickup) {
+        <span>Самовивіз</span>
+        } @else if (order().deliveryMethod == DeliveryMethodEnum.PostOffice) {
+        <div class="delivery__invoice">
+            <span>Поштове відділення</span>
+            <span>Накладна: {{ order().invoice }}</span>
+        </div>
+        } @else if (order().deliveryMethod == DeliveryMethodEnum.ParcelLocker) {
+        <div class="delivery__invoice">
+            <span>Поштомат</span>
+            <span>Накладна: {{ order().invoice }}</span>
+        </div>
+        } @else if (order().deliveryMethod == DeliveryMethodEnum.Courier) {
+        <div class="delivery__invoice">
+            <span>Кур'єр</span>
+            <span>Накладна: {{ order().invoice }}</span>
+        </div>
+        }
+    </div>
+
+    <div class="order__payment block">
+        <div class="payment__row">
+            <span>{{ order().productsAmount }} од. на суму</span>
+
+            <span>
+                {{ order().productsPrice.toFixed(2) }}
+                <span class="price-currency">грн</span>
+            </span>
+        </div>
+        <div class="payment__row">
+            <span>Доставка</span>
+
+            @if (order().deliveryPrice == 0) {
+            <span>Безкоштовно</span>
+            } @else {
+            <span>
+                {{ order().deliveryPrice.toFixed(2) }}
+                <span class="price-currency">грн</span>
+            </span>
+            }
+        </div>
+        <div class="payment__row">
+            <span>Разом</span>
+            <span class="payment__total">
+                {{ order().totalPrice.toFixed(2) }}
+                <span class="price-currency">грн</span>
+            </span>
+        </div>
+    </div>
+</div>

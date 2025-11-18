@@ -1,0 +1,12 @@
+<div class="tags">
+    @for(tag of tags(); track tag.id) {
+    <div class="tag" (click)="removeTag(tag)">
+        <span class="tag__name">{{ tag.name }}</span>
+        <button class="tag__button">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+    </div>
+    } @if(tags().length) {
+    <ui-button [label]="'Скинути фільтри'" [size]="'small'" [type]="'primary'" (click)="clearTags()"></ui-button>
+    }
+</div>

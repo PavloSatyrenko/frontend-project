@@ -1,0 +1,36 @@
+<div class="menu">
+    <div class="menu__item" [ngClass]="{'menu__item_selected': selectedPath === 'products'}" [routerLink]="routeTo('products')">
+        <i class="item__icon fa-solid fa-box"></i>
+        <span class="item__label">Товари</span>
+    </div>
+
+    <div class="menu__item" [ngClass]="{'menu__item_selected': selectedPath === 'clients'}" [routerLink]="routeTo('clients')">
+        <i class="item__icon fa-solid fa-users"></i>
+        <span class="item__label">Клієнти</span>
+    </div>
+
+    <!-- <div class="menu__item" [ngClass]="{'menu__item_selected': selectedPath === 'categories'}" [routerLink]="routeTo('categories')">
+        <i class="item__icon fa-solid fa-tags"></i>
+        <span class="item__label">Категорії</span>
+    </div> -->
+
+    <div class="menu__item" [ngClass]="{'menu__item_selected': selectedPath === 'orders'}" [routerLink]="routeTo('orders')">
+        <i class="item__icon fa-solid fa-list"></i>
+        <span class="item__label">Замовлення</span>
+    </div>
+
+    <div class="menu__item" [ngClass]="{'menu__item_selected': selectedPath === 'gallery'}" [routerLink]="routeTo('gallery')">
+        <i class="item__icon fa-solid fa-image"></i>
+        <span class="item__label">Галерея</span>
+    </div>
+
+    <div class="menu__item" [ngClass]="{'menu__item_selected': selectedPath === 'vin'}" [routerLink]="routeTo('vin')">
+        <i class="item__icon fa-solid fa-car"></i>
+        <span class="item__label">VIN-запити</span>
+    </div>
+
+    <div class="menu__item" [ngClass]="{'menu__item_selected': selectedPath === 'config'}" [routerLink]="routeTo('config')">
+        <i class="item__icon fa-solid fa-gear"></i>
+        <span class="item__label">Конфіг</span>
+    </div>
+</div>

@@ -1,0 +1,58 @@
+<div class="profile">
+    <ui-title [size]="'large'" [title]="'Акаунт'"></ui-title>
+
+    <div class="profile__inputs">
+        <div class="profile-inputs__row">
+            <ui-input [(value)]="nameValue" [label]="'Ім\'я'" [placeholder]="'Введіть ім\'я'"></ui-input>
+
+            <ui-input [(value)]="surnameValue" [label]="'Прізвище'" [placeholder]="'Введіть прізвище'"></ui-input>
+        </div>
+
+        <div class="profile-inputs__row">
+            <ui-input
+                [(value)]="phoneValue"
+                [label]="'Телефон'"
+                [placeholder]="'Введіть телефон'"
+                [type]="'phone'"
+            ></ui-input>
+
+            <ui-input
+                [(value)]="emailValue"
+                [label]="'Електронна пошта'"
+                [placeholder]="'Введіть електронну пошту'"
+            ></ui-input>
+        </div>
+
+        @if(isPasswordConfirmating()) {
+        <span class="password-confirm-button" (click)="closePasswordConfirmation()">Скасувати зміну пароля</span>
+        } @else {
+        <span class="password-confirm-button" (click)="openPasswordConfirmation()">Відкрити зміну пароля</span>
+        } @if(isPasswordConfirmating()) {
+        <div class="profile-inputs__row">
+            <ui-input
+                [(value)]="passwordValue"
+                [label]="'Пароль'"
+                [placeholder]="'Введіть пароль'"
+                [type]="'password'"
+                [autocomplete]="'new-password'"
+            ></ui-input>
+
+            <ui-input
+                [(value)]="confirmPasswordValue"
+                [label]="'Підтвердження пароля'"
+                [placeholder]="'Підтвердіть пароль'"
+                [type]="'password'"
+                [autocomplete]="'new-password'"
+            ></ui-input>
+        </div>
+        }
+
+        <ui-button
+            class="profile__save-button"
+            [label]="'Зберегти зміни профілю'"
+            [type]="'primary'"
+            [size]="'small'"
+            (click)="saveUser()"
+        ></ui-button>
+    </div>
+</div>

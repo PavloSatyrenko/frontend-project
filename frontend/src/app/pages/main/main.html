@@ -1,0 +1,64 @@
+<div class="main">
+    <div class="main__gallery">
+        <main-gallery></main-gallery>
+    </div>
+
+    @if (products().length) {
+    <div class="main__products products container">
+        <ui-title
+            class="products__title"
+            [title]="'Рекомендовані товари'"
+            [size]="'large'"
+            [theme]="'primary'"
+        ></ui-title>
+
+        <div class="products__gallery">
+            <ui-button
+                class="gallery__arrow gallery__arrow_left"
+                [icon]="'fa-solid fa-chevron-left'"
+                [size]="'small'"
+                [type]="'primary-line'"
+                (click)="scrollProductsList('left')"
+            ></ui-button>
+
+            <div #productsList class="products__list">
+                @for (product of products(); track product.id) {
+                <div class="products__item">
+                    <ui-product-card [(products)]="products" [productId]="product.id"></ui-product-card>
+                </div>
+                }
+            </div>
+
+            <ui-button
+                class="gallery__arrow gallery__arrow_right"
+                [icon]="'fa-solid fa-chevron-right'"
+                [size]="'small'"
+                [type]="'primary-line'"
+                (click)="scrollProductsList('right')"
+            ></ui-button>
+        </div>
+    </div>
+    }
+
+    <div class="main__categories categories container">
+        <ui-title
+            class="categories__title"
+            [title]="'Рекомендовані категорії'"
+            [size]="'large'"
+            [theme]="'primary'"
+        ></ui-title>
+
+        <main-categories class="categories__list" [categories]="categories()"></main-categories>
+    </div>
+
+    <div class="main__vin vin container" id="vinBlock" #vinBlock>
+        <ui-title
+            class="vin__title"
+            [title]="'Підібрати запчастини за VIN'"
+            [size]="'large'"
+            [theme]="'primary'"
+        ></ui-title>
+
+        <main-vin-search></main-vin-search>
+    </div>
+</div>

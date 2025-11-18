@@ -1,0 +1,34 @@
+<div
+    class="message"
+    [ngClass]="{
+        'message_type_success' : type() == 'success',
+        'message_type_info' : type() == 'info',
+        'message_type_error' : type() == 'error',
+        'message_with_button' : linkText(),
+        'message_visible' : isVisible(),
+    }"
+>
+    <span
+        class="message__icon fa-solid"
+        [ngClass]="{
+            'fa-circle-check' : type() == 'success',
+            'fa-circle-info' : type() == 'info',
+            'fa-triangle-exclamation' : type() == 'error',
+        }"
+    ></span>
+    <div class="message__container">
+        <span class="container__header">{{ header() }}</span>
+
+        <div class="container__main">
+            <p class="main__text">{{ text() }}</p>
+
+            @if (linkPath().length != 0 && linkText()) {
+            <button class="main__button" [routerLink]="linkPath()" (click)="hideMessage()">{{ linkText() }}</button>
+            }
+        </div>
+    </div>
+
+    <span class="cross-button" (click)="hideMessage()">
+        <i class="fa-solid fa-circle-xmark"></i>
+    </span>
+</div>

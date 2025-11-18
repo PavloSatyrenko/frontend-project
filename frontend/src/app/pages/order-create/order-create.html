@@ -1,0 +1,561 @@
+<div class="order-create container">
+    <ui-title [title]="'Оформлення замовлення'" [size]="'large'"></ui-title>
+
+    <div class="order-create__content content">
+        <div class="content__main main">
+            @if (!isUserAuthorized()) {
+            <div class="main__auth block">
+                <p class="auth__text">
+                    Авторизуватись на сайті для легшого оформлення замовлень та доступу до оптових цін
+                </p>
+
+                <ui-link
+                    class="auth__link"
+                    [label]="'Увійти або зареєструватись на сайті →'"
+                    [type]="'primary-line'"
+                    [routerLink]="['/auth']"
+                ></ui-link>
+            </div>
+            }
+
+            <div class="main__contacts block">
+                <ui-title class="block__title" [title]="'Ваші контактні дані'" [size]="'small'"></ui-title>
+
+                <div class="contacts__inputs">
+                    <div class="inputs__row">
+                        <ui-input
+                            [label]="'Ім\'я'"
+                            [placeholder]="'Введіть ім\'я'"
+                            [(value)]="name"
+                            [isDisabled]="isUserAuthorized()"
+                        ></ui-input>
+
+                        <ui-input
+                            [label]="'Прізвище'"
+                            [placeholder]="'Введіть прізвище'"
+                            [(value)]="surname"
+                            [isDisabled]="isUserAuthorized()"
+                        ></ui-input>
+                    </div>
+
+                    <div class="inputs__row">
+                        <ui-input
+                            [label]="'Телефон'"
+                            [placeholder]="'Введіть телефон'"
+                            [(value)]="phone"
+                            [type]="'phone'"
+                            [isDisabled]="isUserAuthorized()"
+                        ></ui-input>
+
+                        <ui-input
+                            [label]="'Електронна пошта'"
+                            [placeholder]="'Введіть електронну пошту'"
+                            [(value)]="email"
+                            [isDisabled]="isUserAuthorized()"
+                        ></ui-input>
+                    </div>
+                </div>
+            </div>
+
+            <div class="main__products block">
+                <ui-title class="block__title" [title]="'Товари'" [size]="'small'"></ui-title>
+
+                <div class="products__list">
+                    @for (orderItem of orderItems(); track orderItem.product.id) {
+                    <ui-order-product [orderItem]="orderItem"></ui-order-product>
+                    }
+                </div>
+
+                <ui-link
+                    class="products__edit-link"
+                    [label]="'Редагувати замовлення'"
+                    [routerLink]="'/cabinet/shopping-cart'"
+                ></ui-link>
+            </div>
+
+            <div class="main__delivery block">
+                <ui-title class="block__title" [title]="'Доставка'" [size]="'small'"></ui-title>
+
+                <div class="delivery__options">
+                    <div
+                        class="options__item-wrapper"
+                        [ngClass]="{ 'options__item-wrapper_active' : selectedDeliveryMethod() === DeliveryMethodEnum.Pickup}"
+                    >
+                        <div class="options__item-radio" (click)="onDeliveryChange(DeliveryMethodEnum.Pickup)">
+                            <ui-radio
+                                [label]="'Самовивіз з магазину - м.Миколаїв, просп. Миру 1/1, біля Велмарт'"
+                                [name]="'deliveryMethod'"
+                                [checkedValue]="DeliveryMethodEnum.Pickup"
+                                [(value)]="selectedDeliveryMethod"
+                            ></ui-radio>
+
+                            <span class="item-radio__price">Безкоштовно</span>
+                        </div>
+                    </div>
+
+                    <div
+                        class="options__item-wrapper"
+                        [ngClass]="{ 'options__item-wrapper_active' : selectedDeliveryMethod() === DeliveryMethodEnum.PostOffice}"
+                    >
+                        <div class="options__item-radio" (click)="onDeliveryChange(DeliveryMethodEnum.PostOffice)">
+                            <ui-radio
+                                [label]="'Нова пошта - Відділення'"
+                                [name]="'deliveryMethod'"
+                                [checkedValue]="DeliveryMethodEnum.PostOffice"
+                                [(value)]="selectedDeliveryMethod"
+                            ></ui-radio>
+
+                            <span class="item-radio__price">За тарифами перевізника</span>
+                        </div>
+
+                        @if (selectedDeliveryMethod() === DeliveryMethodEnum.PostOffice) {
+                        <div class="options__item-more">
+                            <div class="item-more__row np-row">
+                                <mat-form-field class="np-row__input" appearance="outline" floatLabel="always">
+                                    <mat-label>Місто</mat-label>
+                                    <input
+                                        type="text"
+                                        placeholder="Введіть місто"
+                                        matInput
+                                        [formControl]="citiesFormControl"
+                                        [matAutocomplete]="cities"
+                                    />
+                                </mat-form-field>
+                                <mat-autocomplete
+                                    #cities="matAutocomplete"
+                                    [displayWith]="displayCity"
+                                    (optionSelected)="onCitySelected($event.option.value)"
+                                >
+                                    @for (option of (NPCities$ | async)?.Addresses; track option.Ref) {
+                                    <mat-option [value]="option"> {{ option.Present }} </mat-option>
+                                    }
+                                </mat-autocomplete>
+
+                                <mat-form-field class="np-row__input" appearance="outline">
+                                    <mat-label>Відділення</mat-label>
+                                    <input
+                                        type="text"
+                                        placeholder="Введіть відділення"
+                                        matInput
+                                        [formControl]="warehousesFormControl"
+                                        [matAutocomplete]="warehouses"
+                                    />
+                                </mat-form-field>
+                                <mat-autocomplete
+                                    #warehouses="matAutocomplete"
+                                    [displayWith]="displayWarehouse"
+                                    (optionSelected)="onEndpointSelected('warehouse', $event.option.value)"
+                                >
+                                    @for (option of NPWarehouses$ | async; track option.Ref) {
+                                    <mat-option [value]="option"> {{ option.Description }} </mat-option>
+                                    }
+                                </mat-autocomplete>
+                            </div>
+
+                            <div class="item-more__row item-more__recipient">
+                                <ui-title [title]="'Отримувач'" [size]="'small'"></ui-title>
+
+                                <div class="recipient__row">
+                                    <ui-input [(value)]="recipientName" [label]="`Ім'я`" [size]="'small'"></ui-input>
+                                    <ui-input
+                                        [(value)]="recipientMiddlename"
+                                        [label]="'По-батькові'"
+                                        [size]="'small'"
+                                    ></ui-input>
+                                </div>
+
+                                <div class="recipient__row">
+                                    <ui-input
+                                        [(value)]="recipientSurname"
+                                        [label]="'Прізвище'"
+                                        [size]="'small'"
+                                    ></ui-input>
+                                    <ui-input
+                                        [(value)]="recipientPhone"
+                                        [label]="'Телефон'"
+                                        [size]="'small'"
+                                        [type]="'phone'"
+                                    ></ui-input>
+                                </div>
+                            </div>
+                        </div>
+                        }
+                    </div>
+
+                    <div
+                        class="options__item-wrapper"
+                        [ngClass]="{ 'options__item-wrapper_active' : selectedDeliveryMethod() === DeliveryMethodEnum.ParcelLocker}"
+                    >
+                        <div class="options__item-radio" (click)="onDeliveryChange(DeliveryMethodEnum.ParcelLocker)">
+                            <ui-radio
+                                [label]="'Нова пошта - Поштомат'"
+                                [name]="'deliveryMethod'"
+                                [checkedValue]="DeliveryMethodEnum.ParcelLocker"
+                                [(value)]="selectedDeliveryMethod"
+                            ></ui-radio>
+
+                            <span class="item-radio__price">За тарифами перевізника</span>
+                        </div>
+
+                        @if (selectedDeliveryMethod() === DeliveryMethodEnum.ParcelLocker) {
+                        <div class="options__item-more">
+                            <div class="item-more__row np-row">
+                                <mat-form-field class="np-row__input" appearance="outline" floatLabel="always">
+                                    <mat-label>Місто</mat-label>
+                                    <input
+                                        type="text"
+                                        placeholder="Введіть місто"
+                                        matInput
+                                        [formControl]="citiesFormControl"
+                                        [matAutocomplete]="cities"
+                                    />
+                                </mat-form-field>
+                                <mat-autocomplete
+                                    #cities="matAutocomplete"
+                                    [displayWith]="displayCity"
+                                    (optionSelected)="onCitySelected($event.option.value)"
+                                >
+                                    @for (option of (NPCities$ | async)?.Addresses; track option.Ref) {
+                                    <mat-option [value]="option"> {{ option.Present }} </mat-option>
+                                    }
+                                </mat-autocomplete>
+
+                                <mat-form-field class="np-row__input" appearance="outline">
+                                    <mat-label>Поштомат</mat-label>
+                                    <input
+                                        type="text"
+                                        placeholder="Введіть поштомат"
+                                        matInput
+                                        [formControl]="warehousesFormControl"
+                                        [matAutocomplete]="warehouses"
+                                    />
+                                </mat-form-field>
+                                <mat-autocomplete
+                                    #warehouses="matAutocomplete"
+                                    [displayWith]="displayWarehouse"
+                                    (optionSelected)="onEndpointSelected('parcelLocker', $event.option.value)"
+                                >
+                                    @for (option of NPParcelLockers$ | async; track option.Ref) {
+                                    <mat-option [value]="option"> {{ option.Description }} </mat-option>
+                                    }
+                                </mat-autocomplete>
+                            </div>
+
+                            <div class="item-more__row item-more__recipient">
+                                <ui-title [title]="'Отримувач'" [size]="'small'"></ui-title>
+
+                                <div class="recipient__row">
+                                    <ui-input [(value)]="recipientName" [label]="`Ім'я`" [size]="'small'"></ui-input>
+                                    <ui-input
+                                        [(value)]="recipientMiddlename"
+                                        [label]="'По-батькові'"
+                                        [size]="'small'"
+                                    ></ui-input>
+                                </div>
+
+                                <div class="recipient__row">
+                                    <ui-input
+                                        [(value)]="recipientSurname"
+                                        [label]="'Прізвище'"
+                                        [size]="'small'"
+                                    ></ui-input>
+                                    <ui-input
+                                        [(value)]="recipientPhone"
+                                        [label]="'Телефон'"
+                                        [size]="'small'"
+                                        [type]="'phone'"
+                                    ></ui-input>
+                                </div>
+                            </div>
+                        </div>
+                        }
+                    </div>
+
+                    <div
+                        class="options__item-wrapper"
+                        [ngClass]="{ 'options__item-wrapper_active' : selectedDeliveryMethod() === DeliveryMethodEnum.Courier}"
+                    >
+                        <div class="options__item-radio" (click)="onDeliveryChange(DeliveryMethodEnum.Courier)">
+                            <ui-radio
+                                [label]="`Нова пошта - Кур'єр`"
+                                [name]="'deliveryMethod'"
+                                [checkedValue]="DeliveryMethodEnum.Courier"
+                                [(value)]="selectedDeliveryMethod"
+                            ></ui-radio>
+
+                            <span class="item-radio__price">За тарифами перевізника</span>
+                        </div>
+
+                        @if (selectedDeliveryMethod() === DeliveryMethodEnum.Courier) {
+                        <div class="options__item-more">
+                            <div class="item-more__row np-row">
+                                <mat-form-field class="np-row__input" appearance="outline" floatLabel="always">
+                                    <mat-label>Місто</mat-label>
+                                    <input
+                                        type="text"
+                                        placeholder="Введіть місто"
+                                        matInput
+                                        [formControl]="citiesFormControl"
+                                        [matAutocomplete]="cities"
+                                    />
+                                </mat-form-field>
+                                <mat-autocomplete
+                                    #cities="matAutocomplete"
+                                    [displayWith]="displayCity"
+                                    (optionSelected)="onCitySelected($event.option.value)"
+                                >
+                                    @for (option of (NPCities$ | async)?.Addresses; track option.Ref) {
+                                    <mat-option [value]="option"> {{ option.Present }} </mat-option>
+                                    }
+                                </mat-autocomplete>
+
+                                <mat-form-field class="np-row__input" appearance="outline">
+                                    <mat-label>Вулиця</mat-label>
+                                    <input
+                                        type="text"
+                                        placeholder="Введіть вулицю"
+                                        matInput
+                                        [formControl]="streetsFormControl"
+                                        [matAutocomplete]="streets"
+                                    />
+                                </mat-form-field>
+                                <mat-autocomplete
+                                    #streets="matAutocomplete"
+                                    [displayWith]="displayStreet"
+                                    (optionSelected)="onEndpointSelected('courier', $event.option.value)"
+                                >
+                                    @for (option of (NPStreets$ | async)?.Addresses; track option.SettlementStreetRef) {
+                                    <mat-option [value]="option"> {{ option.Present }} </mat-option>
+                                    }
+                                </mat-autocomplete>
+                            </div>
+
+                            <div class="item-more__row np-row courier-row">
+                                <ui-select
+                                    class="np-row__input"
+                                    [(value)]="selectedTimeInterval"
+                                    [label]="'Бажаний час'"
+                                    [size]="'small'"
+                                    [theme]="'primary'"
+                                    [isDisabled]="!selectedStreet()"
+                                >
+                                    @for (option of timeIntervals(); track option.Number) {
+                                    <option [value]="option.Number">{{`${option.Start} - ${option.End}`}}</option>
+                                    }
+                                </ui-select>
+
+                                <ui-input
+                                    class="np-row__input"
+                                    [(value)]="recipientHouse"
+                                    [label]="'Номер будинку'"
+                                    [size]="'small'"
+                                    [align]="'center'"
+                                    [isDisabled]="!selectedStreet()"
+                                ></ui-input>
+
+                                <ui-input
+                                    class="np-row__input"
+                                    [(value)]="recipientFlat"
+                                    [label]="'Квартира'"
+                                    [size]="'small'"
+                                    [align]="'center'"
+                                    [isDisabled]="!selectedStreet()"
+                                ></ui-input>
+                            </div>
+
+                            <div class="item-more__row floor-row">
+                                <div class="checkbox-wrapper">
+                                    <ui-checkbox
+                                        [label]="'Підняти на поверх'"
+                                        [(value)]="isToDoors"
+                                        [isDisabled]="!selectedStreet()"
+                                    ></ui-checkbox>
+
+                                    <span>*До 100 кг</span>
+                                </div>
+
+                                <ui-input
+                                    class="np-row__input floor-input"
+                                    [(value)]="recipientFloor"
+                                    [label]="'Поверх'"
+                                    [size]="'small'"
+                                    [align]="'center'"
+                                    [type]="'number'"
+                                    [minNumber]="1"
+                                    [maxNumber]="99"
+                                    [isDisabled]="!isToDoors() || !selectedStreet()"
+                                ></ui-input>
+
+                                <ui-checkbox
+                                    [label]="'Наявність ліфта'"
+                                    [(value)]="hasElevator"
+                                    [isDisabled]="!isToDoors() || !selectedStreet()"
+                                ></ui-checkbox>
+                            </div>
+
+                            <div class="item-more__row item-more__recipient">
+                                <ui-title [title]="'Отримувач'" [size]="'small'"></ui-title>
+
+                                <div class="recipient__row">
+                                    <ui-input [(value)]="recipientName" [label]="`Ім'я`" [size]="'small'"></ui-input>
+                                    <ui-input
+                                        [(value)]="recipientMiddlename"
+                                        [label]="'По-батькові'"
+                                        [size]="'small'"
+                                    ></ui-input>
+                                </div>
+
+                                <div class="recipient__row">
+                                    <ui-input
+                                        [(value)]="recipientSurname"
+                                        [label]="'Прізвище'"
+                                        [size]="'small'"
+                                    ></ui-input>
+                                    <ui-input
+                                        [(value)]="recipientPhone"
+                                        [label]="'Телефон'"
+                                        [size]="'small'"
+                                        [type]="'phone'"
+                                    ></ui-input>
+                                </div>
+                            </div>
+                        </div>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <div class="main__payment block">
+                <ui-title class="block__title" [title]="'Доставка'" [size]="'small'"></ui-title>
+
+                <div class="payment__options">
+                    <div
+                        class="options__item-wrapper"
+                        [ngClass]="{ 'options__item_active' : selectedPaymentMethod() === PaymentMethodEnum.ManagerOnline}"
+                    >
+                        <div class="options__item-radio" (click)="onPaymentChange(PaymentMethodEnum.ManagerOnline)">
+                            <ui-radio
+                                [label]="'Оплата онлайн через менеджера'"
+                                [name]="'paymentMethod'"
+                                [checkedValue]="PaymentMethodEnum.ManagerOnline"
+                                [(value)]="selectedPaymentMethod"
+                            ></ui-radio>
+                        </div>
+                    </div>
+
+                    @if (selectedDeliveryMethod() === DeliveryMethodEnum.Pickup) {
+                    <div
+                        class="options__item-wrapper"
+                        [ngClass]="{ 'options__item_active' : selectedPaymentMethod() === PaymentMethodEnum.PaymentOnPickup}"
+                    >
+                        <div
+                            class="options__item-radio"
+                            [ngClass]="{ 'options__item_active' : selectedPaymentMethod() === PaymentMethodEnum.PaymentOnPickup}"
+                            (click)="onPaymentChange(PaymentMethodEnum.PaymentOnPickup)"
+                        >
+                            <ui-radio
+                                [label]="'Оплата при самовивозі'"
+                                [name]="'paymentMethod'"
+                                [checkedValue]="PaymentMethodEnum.PaymentOnPickup"
+                                [(value)]="selectedPaymentMethod"
+                            ></ui-radio>
+                        </div>
+                    </div>
+                    } @else {
+                    <div
+                        class="options__item-wrapper"
+                        [ngClass]="{ 'options__item_active' : selectedPaymentMethod() === PaymentMethodEnum.CashOnDelivery}"
+                    >
+                        <div
+                            class="options__item-radio"
+                            [ngClass]="{ 'options__item_active' : selectedPaymentMethod() === PaymentMethodEnum.CashOnDelivery}"
+                            (click)="onPaymentChange(PaymentMethodEnum.CashOnDelivery)"
+                        >
+                            <ui-radio
+                                [label]="'Накладеним платежем (Готівка)'"
+                                [name]="'paymentMethod'"
+                                [checkedValue]="PaymentMethodEnum.CashOnDelivery"
+                                [(value)]="selectedPaymentMethod"
+                            ></ui-radio>
+
+                            <span class="item-radio__price">20 грн та 2% від ціни товарів</span>
+                        </div>
+                    </div>
+
+                    <div
+                        class="options__item-wrapper"
+                        [ngClass]="{ 'options__item_active' : selectedPaymentMethod() === PaymentMethodEnum.CardOnDelivery}"
+                    >
+                        <div
+                            class="options__item-radio"
+                            [ngClass]="{ 'options__item_active' : selectedPaymentMethod() === PaymentMethodEnum.CardOnDelivery}"
+                            (click)="onPaymentChange(PaymentMethodEnum.CardOnDelivery)"
+                        >
+                            <ui-radio
+                                [label]="'Накладеним платежем (Карта)'"
+                                [name]="'paymentMethod'"
+                                [checkedValue]="PaymentMethodEnum.CardOnDelivery"
+                                [(value)]="selectedPaymentMethod"
+                            ></ui-radio>
+
+                            <span class="item-radio__price">20 грн та 2% від ціни товарів</span>
+                        </div>
+                    </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="content__side side">
+            <div class="side__payment side-block block">
+                <ui-title class="side-block__title" [title]="'Разом'" [size]="'small'"></ui-title>
+
+                <div class="payment__price">
+                    <div class="price__row">
+                        <span>{{ productsCount() }} од. на суму</span>
+                        <span>
+                            {{ productsPrice() }}
+                            <span class="price-currency">грн</span>
+                        </span>
+                    </div>
+
+                    <div class="price__row">
+                        <span>Доставка</span>
+                        @if (deliveryPrice() == 0) {
+                        <span>Безкоштовно</span>
+                        } @else {
+                        <span>
+                            Від {{ deliveryPrice() }}
+                            <span class="price-currency">грн</span>
+                        </span>
+                        }
+                    </div>
+                </div>
+
+                <div class="payment__confirm side-block__confirm">
+                    <div class="confirm__total">
+                        <span>До сплати</span>
+                        <span class="total__total-price">
+                            {{ totalPrice() }}
+                            <span class="price-currency">грн</span>
+                        </span>
+                    </div>
+
+                    @if (deliveryPrice()) {
+                    <span class="total__description"
+                        >* Ціна доставки може бути змінена відповідно до тарифів перевізника</span
+                    >
+                    }
+
+                    <ui-button
+                        [label]="'Підтвердити'"
+                        [size]="'large'"
+                        [type]="'primary'"
+                        [isFullWidth]="true"
+                        (click)="createOrder()"
+                    ></ui-button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

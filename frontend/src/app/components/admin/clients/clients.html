@@ -1,0 +1,302 @@
+<div class="clients">
+    <div class="clients__filter-wrapper">
+        <div class="filter-wrapper__search">
+            <ui-input
+                class="clients__search-input"
+                [(value)]="searchValue"
+                [label]="'Пошук'"
+                [size]="'small'"
+                [theme]="'primary'"
+                [type]="'text'"
+                [placeholder]="'Ім\'я, Прізвище, Пошта, Телефон'"
+                (keydown.enter)="searchClick()"
+            ></ui-input>
+
+            <ui-button
+                class="clients__search-button"
+                [icon]="'fa-solid fa-magnifying-glass'"
+                [type]="'primary-clear'"
+                [size]="'small'"
+                (click)="searchClick()"
+            ></ui-button>
+        </div>
+
+        <div class="filter-wrapper__dropdown">
+            <ui-select
+                class="dropdown availability-dropdown"
+                [(value)]="selectedRole"
+                (valueChange)="filterClients()"
+                [label]="'Тип акаунта'"
+                [size]="'small'"
+                [theme]="'primary'"
+            >
+                <option [value]="UserRoleEnum.ServiceStation">Автосервіс</option>
+                <option [value]="UserRoleEnum.Wholesale">Оптовий покупець</option>
+                <option [value]="UserRoleEnum.Retail">Покупець</option>
+                <option value="ALL">Всі</option>
+            </ui-select>
+        </div>
+    </div>
+
+    <div class="clients__table">
+        @if (clients().length) {
+        <div class="table__header">
+            <div class="table__cell table__cell_header">Прізвище</div>
+            <div class="table__cell table__cell_header">Ім'я</div>
+            <div class="table__cell table__cell_header cell_large">Email</div>
+            <div class="table__cell table__cell_header cell_large">Телефон</div>
+            <div class="table__cell table__cell_header">Тип акаунта</div>
+            <div class="table__cell table__cell_header cell_small">Знижка</div>
+            <div class="table__cell table__cell_header cell_small">Замовлень</div>
+            <div class="table__cell table__cell_header table__cell_edit"></div>
+        </div>
+
+        <div class="table__body">
+            @for (client of clients(); track client.id) {
+            <div class="table__row">
+                <div class="row__info" (click)="chooseClient(client.id)">
+                    <div class="table__cell">
+                        @if (clientIdEditing() !== client.id) {
+                        <span>{{ client.surname }}</span>
+                        } @else {
+                        <ui-input
+                            class="client__discount-input"
+                            [(value)]="surnameValue"
+                            [size]="'small'"
+                            [theme]="'primary'"
+                        ></ui-input>
+                        }
+                    </div>
+
+                    <div class="table__cell">
+                        @if (clientIdEditing() !== client.id) {
+                        <span>{{ client.name }}</span>
+                        } @else {
+                        <ui-input
+                            class="client__discount-input"
+                            [(value)]="nameValue"
+                            [size]="'small'"
+                            [theme]="'primary'"
+                        ></ui-input>
+                        }
+                    </div>
+
+                    <div class="table__cell cell_large">
+                        @if (clientIdEditing() !== client.id) {
+                        <span>{{ client.email }}</span>
+                        } @else {
+                        <ui-input
+                            class="client__discount-input"
+                            [(value)]="emailValue"
+                            [size]="'small'"
+                            [theme]="'primary'"
+                        ></ui-input>
+                        }
+                    </div>
+
+                    <div class="table__cell cell_large">
+                        @if (clientIdEditing() !== client.id) {
+                        <span>{{ client.phone }}</span>
+                        } @else {
+                        <ui-input
+                            class="client__discount-input"
+                            [(value)]="phoneValue"
+                            [size]="'small'"
+                            [theme]="'primary'"
+                            [type]="'phone'"
+                        ></ui-input>
+                        }
+                    </div>
+
+                    <div class="table__cell">
+                        @if (clientIdEditing() !== client.id) { @if (client.role == UserRoleEnum.Retail) {
+                        <span>Покупець</span>
+                        } @else if (client.role == UserRoleEnum.Wholesale) {
+                        <span>Оптовий покупець</span>
+                        } @else if (client.role == UserRoleEnum.ServiceStation) {
+                        <span>Автосервіс</span>
+                        } } @else {
+                        <ui-select
+                            class="dropdown availability-dropdown"
+                            [(value)]="roleValue"
+                            [size]="'small'"
+                            [theme]="'primary'"
+                        >
+                            <option [value]="UserRoleEnum.ServiceStation">Автосервіс</option>
+                            <option [value]="UserRoleEnum.Wholesale">Оптовий покупець</option>
+                            <option [value]="UserRoleEnum.Retail">Покупець</option>
+                            <option value="all">Всі</option>
+                        </ui-select>
+                        }
+                    </div>
+
+                    <div class="table__cell cell_small">
+                        @if (clientIdEditing() !== client.id) {
+                        <span>{{ client.discount }}%</span>
+                        } @else {
+                        <ui-input
+                            class="client__discount-input"
+                            [(value)]="discountValue"
+                            [size]="'small'"
+                            [theme]="'primary'"
+                            [type]="'number'"
+                            [align]="'center'"
+                            [minNumber]="0"
+                            [maxNumber]="100"
+                        ></ui-input>
+                        }
+                    </div>
+
+                    <div class="table__cell cell_small">{{ client.totalOrders }}</div>
+                </div>
+
+                <div class="table__cell table__cell_edit cell-edit">
+                    @if (clientIdEditing() !== client.id) {
+                    <ui-button
+                        class="cell-edit__edit-button cell-edit__button"
+                        [icon]="'fa-solid fa-pen-to-square'"
+                        [type]="'primary-clear'"
+                        [size]="'small'"
+                        (click)="clientEdit(client.id)"
+                    ></ui-button>
+                    } @else {
+                    <ui-button
+                        class="client__save-button cell-edit__button"
+                        [icon]="'fa-solid fa-check'"
+                        [type]="'primary-clear'"
+                        [size]="'small'"
+                        (click)="clientSave(client.id)"
+                    ></ui-button>
+                    <ui-button
+                        class="client__save-button cell-edit__button"
+                        [icon]="'fa-solid fa-xmark'"
+                        [type]="'primary-clear'"
+                        [size]="'small'"
+                        (click)="clientCancel()"
+                    ></ui-button>
+                    }
+                </div>
+            </div>
+            }
+        </div>
+        } @else {
+        <ui-title [title]="'Результатів немає'" [size]="'small'"></ui-title>
+        }
+    </div>
+    @if (totalPages() > 1) {
+    <ui-pagination
+        [pageAmount]="totalPages()"
+        [middlePagesAmount]="5"
+        (pageChange)="onPageChange($event)"
+    ></ui-pagination>
+    } @if (selectedClient()) {
+    <div class="client-info">
+        <div class="client-info__info">
+            @if (selectedClient()!.role == UserRoleEnum.Retail) {
+            <span class="info__status">Покупець</span>
+            } @else if (selectedClient()!.role == UserRoleEnum.Wholesale) {
+            <span class="info__status">Оптовий покупець</span>
+            } @else if (selectedClient()!.role == UserRoleEnum.ServiceStation) {
+            <span class="info__status">Автосервіс</span>
+            }
+
+            <span class="info__discount">{{ selectedClient()!.discount }}%</span>
+
+            <span class="info__total-orders">Замовлень: {{ selectedClient()!.totalOrders }}</span>
+        </div>
+
+        <div class="client-info__user">
+            <div class="user__name-wrapper">
+                <span class="name-wrapper__name">
+                    <span class="header__header-text">Ім'я: </span>
+                    {{ selectedClient()!.name }}
+                </span>
+                <span class="name-wrapper__surname">
+                    <span class="header__header-text">Прізвище: </span>
+                    {{ selectedClient()!.surname }}
+                </span>
+            </div>
+
+            <div class="user__contact-wrapper">
+                <span class="contact-wrapper__email">
+                    <span class="header__header-text">Пошта: </span>
+                    {{ selectedClient()!.email }}
+                </span>
+                <span class="contact-wrapper__phone">
+                    <span class="header__header-text">Телефон: </span>
+                    {{ selectedClient()!.phone }}
+                </span>
+            </div>
+        </div>
+
+        <div class="client-info__order-list">
+            @for (order of selectedClient()!.orders; track order.id) {
+            <div class="order-list__order">
+                <div class="order__top-wrapper order-top">
+                    <div class="order-top__info order-header">
+                        <div class="order-header__top-text">
+                            <span class="order-header__id">№ {{ order.number }}</span>
+                            <span class="order-header__date"> {{ order.date | date: 'dd MMMM yyyy HH:mm' }} </span>
+                        </div>
+                        @if (order.status == OrderStatusEnum.Completed) {
+                        <span class="order-header__status">Виконано</span>
+                        } @else if (order.status == OrderStatusEnum.Accepted) {
+                        <span class="order-header__status">Прийнято</span>
+                        } @else if (order.status == OrderStatusEnum.Processing) {
+                        <span class="order-header__status">Обробляється менеджером</span>
+                        } @else if (order.status == OrderStatusEnum.Preparing) {
+                        <span class="order-header__status">Готується до відправлення</span>
+                        } @else if (order.status == OrderStatusEnum.Sent) {
+                        <span class="order-header__status">Відправлено</span>
+                        } @else if (order.status == OrderStatusEnum.Cancelled) {
+                        <span class="order-header__status">Скасовано</span>
+                        }
+                    </div>
+
+                    <div class="order-top__total">
+                        <span class="total__text header__header-text">Загальна вартість</span>
+                        <span class="total__price">{{ order.totalPrice.toFixed(2) }}</span>
+                    </div>
+                </div>
+
+                <div class="order__bottom-wrapper order-bottom">
+                    <div class="order-bottom__delivery-wrapper">
+                        <span class="delivery-wrapper__delivery">
+                            <span class="header__header-text">Доставка: </span>
+                            {{ order.deliveryMethod }}
+                        </span>
+                        <span class="delivery-wrapper__price">
+                            <span class="header__header-text">Вартість доставки: </span>
+                            {{ order.deliveryPrice.toFixed(2) }}
+                        </span>
+                    </div>
+
+                    <div class="order-bottom__products-wrapper">
+                        <span class="products-wrapper__amount">
+                            <span class="header__header-text">Кількість товарів: </span>
+                            {{ order.productsAmount }}
+                        </span>
+                        <span class="products-wrapper__price">
+                            <span class="header__header-text">Сума за товари: </span>
+                            {{ order.productsPrice.toFixed(2) }}
+                        </span>
+                    </div>
+                </div>
+            </div>
+            } @if (clientOrdersResponse().totalPages > 1) {
+            <ui-pagination
+                [pageAmount]="clientOrdersResponse().totalPages"
+                [middlePagesAmount]="5"
+                (pageChange)="onOrdersPageChange($event)"
+            ></ui-pagination>
+            }
+        </div>
+
+        <span class="client-info__cross-button" (click)="clearClientChoosing()">
+            <i class="fa-solid fa-xmark"></i>
+        </span>
+    </div>
+
+    <div class="client-info__background"></div>
+    }
+</div>

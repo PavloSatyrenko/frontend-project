@@ -1,0 +1,48 @@
+<div class="product__item item">
+    <img
+        class="item__image"
+        [src]="productImageUrl()"
+        [alt]="orderItem().product.name"
+        [routerLink]="['product', orderItem().product.id]"
+    />
+
+    <div class="item__info">
+        <div class="info__title" [routerLink]="['/product', orderItem().product.id]">
+            <div class="title__top-text">
+                <span class="title__manufacturer">{{ orderItem().product.manufacturer }}</span>
+                <span class="title__code">{{ orderItem().product.code }}</span>
+            </div>
+
+            <span class="title__name">{{ orderItem().product.name | formatProductName }}</span>
+        </div>
+
+        <div class="info__price info-price">
+            <div class="info-price__product-price">
+                <div class="product-price__wrapper">
+                    <span
+                        class="price__full-price"
+                        [ngClass]="{ 'price__full-price_inactive' : orderItem().product.discount && !orderItem().priceOut}"
+                    >
+                        {{ (orderItem().priceOut ?? orderItem().price).toFixed(2) }} @if (!orderItem().product.discount
+                        || orderItem().priceOut) {
+                        <span class="price-currency">грн</span>
+                        }
+                    </span>
+                    @if (orderItem().product.discount && !orderItem().priceOut) {
+                    <span class="price__discount-price">
+                        {{ discountedPrice(orderItem().product).toFixed(2) }}
+                        <span class="price-currency">грн</span>
+                    </span>
+                    }
+                </div>
+
+                <span class="price__amount"> х {{ orderItem().amount }} од.</span>
+            </div>
+
+            <span class="info-price__total">
+                {{ orderItemTotalPrice().toFixed(2) }}
+                <span class="price-currency">грн</span>
+            </span>
+        </div>
+    </div>
+</div>

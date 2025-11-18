@@ -1,0 +1,46 @@
+<div class="orders">
+    <ui-title [title]="'Мої замовлення'" [size]="'large'"></ui-title>
+
+    <div class="orders__content">
+        <div class="content__control">
+            <div class="filter-wrapper__search">
+                <ui-input
+                    class="orders__search-input"
+                    [placeholder]="'Номер'"
+                    [(value)]="searchValue"
+                    [size]="'small'"
+                    [theme]="'primary'"
+                    [type]="'text'"
+                ></ui-input>
+                <ui-button
+                    class="orders__search-button"
+                    [icon]="'fa-solid fa-magnifying-glass'"
+                    [type]="'primary-clear'"
+                    [size]="'small'"
+                    (click)="searchClick()"
+                ></ui-button>
+            </div>
+
+            <ui-select class="control__filter" [(value)]="selectedPeriod" [size]="'small'" [theme]="'primary'">
+                <option value="YEAR">За 2025 рік</option>
+                <option value="HALF_YEAR">За останні 6 місяців</option>
+                <option value="MONTH">За останні 30 днів</option>
+                <option value="ALL">За весь час</option>
+            </ui-select>
+        </div>
+
+        @if (!orders().length) {
+        <ui-title [title]="'Результатів немає'" [size]="'small'"></ui-title>
+        } @else { @for (order of orders(); track order.id) {
+        <orders-order-card [order]="order"></orders-order-card>
+        } @if (isShowMoreButtonVisible()) {
+        <ui-button
+            class="content__button"
+            [label]="'Показати ще'"
+            [size]="'small'"
+            [type]="'primary'"
+            (click)="showMore()"
+        ></ui-button>
+        } }
+    </div>
+</div>

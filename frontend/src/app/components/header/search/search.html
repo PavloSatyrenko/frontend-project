@@ -1,0 +1,77 @@
+<div class="search-input-wrapper">
+    <ui-input
+        #input
+        class="search-input"
+        [(value)]="searchValue"
+        [placeholder]="'Пошук запчастин'"
+        [size]="'small'"
+        [theme]="'primary'"
+        (click)="openSearch()"
+        (keydown)="searchOnEnterDown($event)"
+    />
+
+    <button class="search-input__search-button" (click)="search()">Знайти</button>
+</div>
+
+<ui-button
+    class="search-input_mobile"
+    [icon]="'fa-solid fa-magnifying-glass'"
+    [size]="'small'"
+    [type]="'primary-clear'"
+    (click)="showMobileSearchInput()"
+></ui-button>
+
+<div
+    class="search-input-wrapper_mobile"
+    [ngClass]="{ 'search-input-wrapper_mobile_visible' : isMobileSearchInputVisible() }"
+>
+    <ui-input
+        #mobileInput
+        class="search-input"
+        [(value)]="searchValue"
+        [placeholder]="'Пошук запчастин'"
+        [size]="'small'"
+        [theme]="'primary'"
+        (keydown)="searchOnEnterDown($event)"
+    />
+
+    <button class="search-input__search-button" (click)="search()">Знайти</button>
+</div>
+
+@if (isSearchContainerVisible() && searchValue().trim()) {
+<div class="search__results">
+    @if(state() === 'loaded') { @for(product of products(); track product.id) {
+    <div class="search__product" [routerLink]="['/product', product.id]">
+        <img class="product__image" [src]="getProductImageUrl(product)" [alt]="product.name" />
+        <div class="product__info">
+            <div class="info__main">
+                <span class="main__manufacturer">{{ product.manufacturer }}</span>
+                <span class="main__code">{{ product.code }}</span>
+            </div>
+            <span class="info__name">{{ product.name | formatProductName }}</span>
+        </div>
+
+        <div class="product__price">
+            <span class="price__full-price" [ngClass]="{ 'price__full-price_inactive' : product.discount }">
+                {{ product.price.toFixed(2) }}
+            </span>
+            @if (product.discount) {
+            <span class="price__discount-price"> {{ discountedPrice(product).toFixed(2) }} </span>
+            }
+        </div>
+    </div>
+    } } @else if (state() === 'loading') {
+    <div class="search__loader-wrapper">
+        <div class="search__loader"></div>
+    </div>
+    } @else if (state() === 'no-results') {
+    <span class="search__empty">Товарів не знайдено</span>
+    }
+</div>
+}
+
+<div
+    class="background"
+    [ngClass]="{ 'background_visible' : (isSearchContainerVisible() && searchValue().trim()) || isMobileSearchInputVisible() }"
+    (click)="hideSearch()"
+></div>

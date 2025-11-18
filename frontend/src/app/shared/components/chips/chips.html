@@ -1,0 +1,17 @@
+<div class="chips">
+    <a class="chip chip_main" [routerLink]="'/'">
+        <span class="chip__icon">
+            <i class="fa-regular fa-house"></i>
+        </span>
+
+        <span class="chip__text">Головна</span>
+    </a>
+
+    @for(chip of chips(); track chip.id) {
+    <span class="chips__divider"><i class="fa-solid fa-wrench"></i></span>
+
+    <a class="chip" [routerLink]="['/category', chip.id]">
+        <span class="chip__text">{{ chip.name }}</span>
+    </a>
+    }
+</div>

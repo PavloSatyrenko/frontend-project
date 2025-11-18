@@ -1,0 +1,203 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+model User {
+    id               String                @id @default(uuid())
+    phone            String                @unique
+    name             String
+    surname          String
+    role             Role                  @default(RETAIL)
+    email            String?               @unique
+    passwordHash     String?
+    discount         Int                   @default(0)
+    isRegistered     Boolean               @default(true)
+    refreshTokens    RefreshToken[]
+    favoriteProducts FavoriteUserProduct[]
+    cartItems        CartItem[]
+    orders           Order[]
+}
+
+enum Role {
+    WHOLESALE
+    SERVICE_STATION
+    RETAIL
+    ADMIN
+}
+
+model RefreshToken {
+    id           String   @id @default(uuid())
+    refreshToken String   @unique
+    user         User     @relation(fields: [userId], references: [id])
+    userId       String
+    createdAt    DateTime @default(now())
+}
+
+model Category {
+    id            String     @id @default(uuid())
+    csvId         String     @unique
+    name          String
+    parentId      String?
+    parent        Category?  @relation("CategoryParent", fields: [parentId], references: [id])
+    subcategories Category[] @relation("CategoryParent")
+    // filters       Filter[]
+}
+
+model Filter {
+    id           String        @id @default(uuid())
+    name         String
+    filterValues FilterValue[]
+    // categoryId   String
+    // category     Category      @relation(fields: [categoryId], references: [id])
+}
+
+model FilterValue {
+    id       String @id @default(uuid())
+    name     String
+    filterId String
+    filter   Filter @relation(fields: [filterId], references: [id])
+    // products Product[]
+}
+
+model Product {
+    id                   String                @id @default(uuid())
+    name                 String                @db.Text
+    image                String[]
+    manufacturer         String
+    code                 String
+    price                Float
+    availability         Availability          @default(AVAILABLE)
+    daysBeforeDelivery   Int                   @default(0)
+    discount             Int                   @default(0)
+    amount               Int
+    supplier             String
+    isActive             Boolean               @default(true)
+    isRecommended        Boolean               @default(false)
+    categoryIds          String[]              @default([])
+    // filters      FilterValue[]
+    favoriteUserProducts FavoriteUserProduct[]
+    cartItems            CartItem[]
+    orderItem            OrderItem[]
+    productAnalogs       Analog[]              @relation("ProductAnalogs")
+    analogProducts       Analog[]              @relation("AnalogProducts")
+
+    @@unique([code, manufacturer, supplier])
+    @@index([name])
+    @@index([code])
+    @@index([manufacturer])
+    @@index([categoryIds])
+    @@index([price])
+    @@index([discount])
+    @@index([name, manufacturer])
+}
+
+enum Availability {
+    AVAILABLE
+    NOT_AVAILABLE
+}
+
+model Analog {
+    productId       String
+    analogProductId String
+    product         Product @relation("ProductAnalogs", fields: [productId], references: [id])
+    analogProduct   Product @relation("AnalogProducts", fields: [analogProductId], references: [id])
+
+    @@id([productId, analogProductId])
+}
+
+model FavoriteUserProduct {
+    userId    String
+    user      User    @relation(fields: [userId], references: [id])
+    productId String
+    product   Product @relation(fields: [productId], references: [id])
+
+    @@id([userId, productId])
+}
+
+model CartItem {
+    id        String  @id @default(uuid())
+    userId    String
+    user      User    @relation(fields: [userId], references: [id])
+    productId String
+    product   Product @relation(fields: [productId], references: [id])
+    amount    Int     @default(1)
+    isChecked Boolean @default(false)
+}
+
+model Order {
+    id             String      @id @default(uuid())
+    number         Int         @unique @default(autoincrement())
+    date           DateTime    @default(now())
+    status         OrderStatus @default(ACCEPTED)
+    userId         String
+    user           User        @relation(fields: [userId], references: [id])
+    name           String
+    surname        String
+    phone          String
+    email          String?
+    invoice        String?
+    productsPrice  Float
+    productsAmount Int
+    deliveryMethod String
+    deliveryPrice  Float
+    paymentMethod  String
+    totalPrice     Float
+    orderItems     OrderItem[]
+}
+
+enum OrderStatus {
+    ACCEPTED
+    PROCESSING
+    PREPARING
+    SENT
+    COMPLETED
+    CANCELLED
+}
+
+model OrderItem {
+    id            String  @id @default(uuid())
+    productId     String
+    product       Product @relation(fields: [productId], references: [id])
+    price         Float
+    priceOut      Float
+    priceOutBasic Float
+    amount        Int
+    orderId       String
+    order         Order   @relation(fields: [orderId], references: [id])
+}
+
+model GalleryPage {
+    id          String  @id @default(uuid())
+    title       String
+    description String
+    image       String
+    order       Int
+    isActive    Boolean @default(true)
+}
+
+model VinOrder {
+    id        String   @id @default(uuid())
+    name      String
+    phone     String
+    vin       String
+    text      String?  @db.Text
+    createdAt DateTime @default(now())
+}
+
+model Config {
+    id    String @id @default(uuid())
+    key   String @unique
+    value String @db.Text
+    group String
+}

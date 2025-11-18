@@ -1,0 +1,165 @@
+<div class="gallery">
+    <div class="gallery__header">
+        <ui-button
+            [label]="'Додати сторінку галереї'"
+            [icon]="'fa-solid fa-plus'"
+            [type]="'primary'"
+            [size]="'small'"
+            (click)="addGalleryPage()"
+        ></ui-button>
+
+        <ui-select
+            class="gallery__select"
+            [(value)]="isGalleryActive"
+            (valueChange)="filterGalleryPages()"
+            [label]="'Чи активна сторінка галереї'"
+            [size]="'small'"
+            [theme]="'primary'"
+        >
+            <option [value]="'ACTIVE'">Активна</option>
+            <option [value]="'INACTIVE'">Неактивна</option>
+            <option [value]="'ALL'">Всі</option>
+        </ui-select>
+    </div>
+
+    <div class="gallery__list">
+        @if (!gallery().length) {
+        <ui-title [title]="'Сторінок галереї не знайдено'" [size]="'small'"></ui-title>
+        } @for (page of gallery(); track page.id){
+        <div class="gallery__item">
+            <div class="item__arrows">
+                <ui-button
+                    [icon]="'fa-solid fa-arrow-up'"
+                    [type]="'primary-line'"
+                    [size]="'small'"
+                    (click)="moveGalleryPageUp(page.id)"
+                    [isDisabled]="isPageFirst(page.id) || isGalleryOrderChanging()"
+                ></ui-button>
+
+                <ui-button
+                    [icon]="'fa-solid fa-arrow-down'"
+                    [type]="'primary-line'"
+                    [size]="'small'"
+                    (click)="moveGalleryPageDown(page.id)"
+                    [isDisabled]="isPageLast(page.id) || isGalleryOrderChanging()"
+                ></ui-button>
+            </div>
+
+            <div class="item__card" [ngClass]="{'item__card_inactive': !page.isActive}">
+                <img class="item__image" [src]="page.image" [alt]="page.title" />
+
+                <div class="item__info">
+                    <div class="info__header">
+                        <span class="info__title">{{ page.title }}</span>
+
+                        <span class="info__status"> {{ page.isActive ? 'Активна' : 'Неактивна' }} </span>
+                    </div>
+
+                    <span class="info__description">{{ page.description }}</span>
+                </div>
+
+                <div class="item__actions">
+                    <ui-button
+                        [icon]="'fa-solid fa-pen-to-square'"
+                        [type]="'primary-clear'"
+                        [size]="'small'"
+                        (click)="editGalleryPage(page.id)"
+                    ></ui-button>
+
+                    <ui-button
+                        [icon]="'fa-solid fa-trash-can'"
+                        [type]="'primary-clear'"
+                        [size]="'small'"
+                        (click)="deleteGalleryPage(page.id)"
+                    ></ui-button>
+                </div>
+            </div>
+        </div>
+        }
+    </div>
+
+    @if (isAddingGalleryPage() || isEditingGalleryPage()) {
+    <div class="gallery__popup">
+        <div class="popup__background"></div>
+
+        <div class="popup__card">
+            <span class="popup__cross" (click)="closeGalleryPopup()">
+                <i class="fa-solid fa-xmark"></i>
+            </span>
+
+            <ui-title
+                class="popup__title"
+                [title]="galleryPagePopupTitle()"
+                [size]="'medium'"
+                [theme]="'primary'"
+            ></ui-title>
+
+            <div class="popup__content">
+                <div class="popup__image">
+                    <input
+                        #fileInput
+                        type="file"
+                        class="image__input"
+                        accept="image/*"
+                        (change)="onImageSelected($event)"
+                    />
+
+                    @if (galleryPageImagePreview()) {
+                    <img class="image__preview" [src]="galleryPageImagePreview()" [alt]="'Попередній перегляд'" />
+                    } @else {
+                    <div class="image__placeholder">
+                        <span class="placeholder__icon">
+                            <i class="fa-solid fa-cloud-upload"></i>
+                        </span>
+
+                        <span class="placeholder__text"> Натисніть, щоб вибрати зображення </span>
+                    </div>
+                    }
+                </div>
+
+                <ui-input
+                    [label]="'Введіть заголовок сторінки галереї'"
+                    [placeholder]="'Заголовок'"
+                    [(value)]="galleryPageTitle"
+                    [size]="'small'"
+                    [theme]="'primary'"
+                ></ui-input>
+
+                <ui-input
+                    [label]="'Введіть опис сторінки галереї'"
+                    [placeholder]="'Опис'"
+                    [(value)]="galleryPageDescription"
+                    [size]="'small'"
+                    [theme]="'primary'"
+                ></ui-input>
+
+                @if(isEditingGalleryPage()){
+                <ui-checkbox [label]="'Чи активна сторінка галереї'" [(value)]="galleryPageIsActive"></ui-checkbox>
+                }
+            </div>
+
+            @if (isAddingGalleryPage()) {
+            <ui-button
+                class="popup__button"
+                [label]="'Зберегти нову сторінку галереї'"
+                [type]="'primary'"
+                [size]="'small'"
+                [isFullWidth]="true"
+                [isDisabled]="isPopupSaveButtonDisabled()"
+                (click)="saveNewGalleryPage()"
+            ></ui-button>
+            } @else if (isEditingGalleryPage()) {
+            <ui-button
+                class="popup__button"
+                [label]="'Зберегти відредаговану сторінку галереї'"
+                [type]="'primary'"
+                [size]="'small'"
+                [isFullWidth]="true"
+                [isDisabled]="isPopupSaveButtonDisabled()"
+                (click)="saveEditedGalleryPage()"
+            ></ui-button>
+            }
+        </div>
+    </div>
+    }
+</div>

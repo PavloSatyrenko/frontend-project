@@ -1,0 +1,143 @@
+.product__item {
+    display: flex;
+    gap: 20px;
+    height: 80px;
+}
+
+@media screen and (max-width: 767px) {
+    .product__item {
+        gap: 12px;
+        align-items: center;
+        height: 116px;
+    }
+}
+
+.item__info {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+
+@media screen and (max-width: 767px) {
+    .item__info {
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: center;
+    }
+}
+
+.item__image {
+    height: 100%;
+    aspect-ratio: 1;
+    cursor: pointer;
+}
+
+@media screen and (max-width: 565px) {
+    .item__image {
+        height: 60px;
+    }
+}
+
+.info__title {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    cursor: pointer;
+}
+
+.title__top-text {
+    display: flex;
+    flex-wrap: wrap;
+    column-gap: 6px;
+}
+
+.title__name {
+    max-height: 40px;
+    overflow: auto;
+}
+
+.title__manufacturer {
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+.title__code {
+    color: var(--gray-text-color);
+}
+
+.info__price {
+    display: flex;
+    flex-shrink: 0;
+    flex-direction: column;
+    gap: 6px;
+    align-items: flex-end;
+    width: 154px;
+}
+
+@media screen and (max-width: 767px) {
+    .info__price {
+        flex-direction: row;
+        gap: 0;
+        justify-content: space-between;
+        width: 100%;
+    }
+}
+
+.info-price__product-price {
+    display: flex;
+    gap: 6px;
+    align-items: flex-end;
+}
+
+.product-price__wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.price__full-price_inactive {
+    position: relative;
+    width: fit-content;
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--gray-text-color);
+}
+
+.price__full-price_inactive::after {
+    position: absolute;
+    top: calc(50% - 2px);
+    left: 0;
+    display: block;
+    width: calc(100% - 2px);
+    height: 1px;
+    content: "";
+    background-color: var(--gray-text-color);
+    transform: rotate(8deg);
+}
+
+.price__discount-price {
+    font-weight: 700;
+    color: var(--primary-color);
+    white-space: nowrap;
+}
+
+.price-currency {
+    font-size: 12px;
+    opacity: 0.5;
+}
+
+@media screen and (max-width: 565px) {
+    .price__amount {
+        width: 50px;        
+        font-size: 14px;
+    }
+}
+
+.info-price__total {
+    flex-shrink: 0;
+    width: 102px;
+    font-weight: 700;
+    text-align: right;
+}

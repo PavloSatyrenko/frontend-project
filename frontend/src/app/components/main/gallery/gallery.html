@@ -1,0 +1,41 @@
+<div class="gallery" (mouseenter)="stopAutoPlay()" (mouseleave)="startAutoPlay()">
+    <div
+        class="gallery__track"
+        [class.no-transition]="!isTransitionEnabled()"
+        [style.transform]="galleryTotal() > 1 ? `translateX(-${currentIndex() * 100}%)`: 'none'"
+        (transitionend)="onTransitionEnd()"
+    >
+        @for (item of gallery(); track item.id) {
+        <div class="track__item">
+            <img class="item__image-background" [src]="item.image" [alt]="item.title" />
+            <img class="item__image" [src]="item.image" [alt]="item.title" />
+
+            <div class="item__info container">
+                <ui-title class="info__title" [title]="item.title" [size]="'medium'" [theme]="'light'"></ui-title>
+                <p class="info__description">{{ item.description }}</p>
+            </div>
+
+            <div class="item__shadow"></div>
+        </div>
+        }
+    </div>
+
+    @if (galleryTotal() > 1) {
+    <ui-button
+        class="gallery__arrow gallery__arrow_left"
+        [icon]="'fa-solid fa-chevron-left'"
+        [size]="'small'"
+        [type]="'white-icon'"
+        [isDisabled]="isTransitioning()"
+        (click)="prevGalleryPage(true)"
+    ></ui-button>
+    <ui-button
+        class="gallery__arrow gallery__arrow_right"
+        [icon]="'fa-solid fa-chevron-right'"
+        [size]="'small'"
+        [type]="'white-icon'"
+        [isDisabled]="isTransitioning()"
+        (click)="nextGalleryPage(true)"
+    ></ui-button>
+    }
+</div>

@@ -1,0 +1,28 @@
+<div class="range">
+    <ui-button
+        [icon]="'fa-solid fa-minus'"
+        [size]="'small'"
+        [type]="'primary-clear'"
+        (click)="decreaseValue()"
+        [isDisabled]="isDecreaseButtonDisabled()"
+    ></ui-button>
+
+    <ui-input
+        [(value)]="value"
+        [type]="'number'"
+        [minNumber]="minNumber()"
+        [maxNumber]="maxNumber()"
+        [size]="'small'"
+        [theme]="'primary'"
+        [align]="'center'"
+        [isDisabled]="isDisabled()"
+    ></ui-input>
+
+    <ui-button
+        [icon]="'fa-solid fa-plus'"
+        [size]="'small'"
+        [type]="'primary-clear'"
+        (click)="increaseValue()"
+        [isDisabled]="isIncreaseButtonDisabled()"
+    ></ui-button>
+</div>

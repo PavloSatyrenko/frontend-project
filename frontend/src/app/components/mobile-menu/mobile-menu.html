@@ -1,0 +1,42 @@
+<div class="mobile-menu">
+    <div class="mobile-menu__item" [routerLink]="['category']">
+        <i class="item__icon fa-solid fa-house"></i>
+        <span class="item__name">Каталог</span>
+    </div>
+
+    <div class="mobile-menu__item" [routerLink]="['cabinet', 'profile']">
+        <i class="item__icon fa-solid fa-user"></i>
+        <span class="item__name">
+            Акаунт
+        </span>
+    </div>
+
+    <div class="mobile-menu__item" (click)="scrollToVin()">
+        <i class="item__icon fa-solid fa-magnifying-glass"></i>
+        <span class="item__name item__name_vin">
+            Підбір за VIN
+        </span>
+
+        <span class="item__name item__name_small-vin">
+            VIN
+        </span>
+    </div>
+
+    <div class="mobile-menu__item" [routerLink]="['cabinet', 'favorites']">
+        <i class="item__icon fa-solid fa-heart"></i>
+        <span class="item__name">
+            Обране
+        </span>
+    </div>
+
+    <div class="mobile-menu__item" [routerLink]="['cabinet', 'shopping-cart']">
+        <i class="item__icon fa-solid fa-shopping-cart"></i>
+        <span class="item__name">
+            Кошик
+        </span>
+
+        @if(cartItemCount() > 0) {
+        <div class="item__badge">{{ cartItemCount() }}</div>
+        }
+    </div>
+</div>

@@ -1,0 +1,115 @@
+<div class="cart">
+    <ui-title [title]="'Кошик'" [size]="'large'" [theme]="'primary'"></ui-title>
+
+    @if (!cartItems().length) {
+    <div class="products__empty">
+        <i class="empty__icon fa-solid fa-face-frown"></i>
+        <ui-title [title]="'Кошик порожній'"></ui-title>
+    </div>
+    } @else {
+    <div class="cart__content-wrapper">
+        <ui-checkbox
+            [label]="'Обрано ' + selectedAmount() + ' з ' + cartItems().length"
+            [(value)]="isAllProductsSelected"
+            (change)="onSelectAllChange()"
+        ></ui-checkbox>
+
+        <div class="cart__products">
+            @for(cartItem of cartItems(); track cartItem.id) {
+            <div class="cart__product">
+                <div class="product__part product__part_left">
+                    <div class="product__image-wrapper">
+                        <ui-checkbox
+                            [(value)]="cartItem.isChecked"
+                            (change)="onProductSelect(cartItem.id)"
+                        ></ui-checkbox>
+
+                        <img
+                            class="product__image"
+                            [src]="getProductImageUrl(cartItem.product)"
+                            [alt]="cartItem.product.name"
+                        />
+                    </div>
+
+                    <div class="product__info">
+                        <div class="product__details">
+                            <span class="product__manufacturer">{{ cartItem.product.manufacturer }}</span>
+                            <span class="product__code">{{ cartItem.product.code }}</span>
+                        </div>
+
+                        <span class="product__name">{{ cartItem.product.name | formatProductName }}</span>
+                    </div>
+
+                    <div class="product__buttons">
+                        <ui-button
+                            [icon]="cartItem.product.isFavorite ? 'fa-solid fa-heart' : 'fa-regular fa-heart'"
+                            [type]="'primary-clear'"
+                            [size]="'small'"
+                            (click)="toggleProductFavorite(cartItem)"
+                        ></ui-button>
+
+                        <ui-button
+                            [icon]="'fa-solid fa-trash-can'"
+                            [size]="'small'"
+                            [type]="'primary-clear'"
+                            (click)="onProductRemove(cartItem)"
+                        ></ui-button>
+                    </div>
+                </div>
+
+                <div class="product__part product__part_right">
+                    <div class="product__price">
+                        <span
+                            class="price__full-price"
+                            [ngClass]="{ 'price__full-price_inactive' : cartItem.product.discount }"
+                        >
+                            {{ cartItem.product.price.toFixed(2) }} @if (!cartItem.product!.discount) {
+                            <span class="price-currency">грн</span>
+                            }
+                        </span>
+                        @if (cartItem.product.discount) {
+                        <span class="price__discount-price">
+                            {{ discountedPrice(cartItem.product).toFixed(2) }}
+                            <span class="price-currency">грн</span>
+                        </span>
+                        }
+                    </div>
+
+                    <ui-range
+                        class="product__amount"
+                        [(value)]="cartItem.amount"
+                        [minNumber]="1"
+                        [maxNumber]="cartItem.product.amount"
+                        (change)="onProductsAmountChange(cartItem)"
+                    ></ui-range>
+
+                    <span class="product__total-price">
+                        {{ cartItem.totalPrice.toFixed(2) }}
+                        <span class="price-currency">грн</span>
+                    </span>
+                </div>
+            </div>
+            }
+        </div>
+
+        <div class="cart__order">
+            <span class="order__price">
+                {{ totalPrice().toFixed(2) }}
+                <span class="price-currency">грн</span>
+            </span>
+
+            @if (!isOrderEmpty()) {
+            <ui-button
+                class="order__button"
+                [label]="'Оформити замовлення'"
+                [size]="'large'"
+                [type]="'primary'"
+                (click)="createOrder()"
+            ></ui-button>
+            } @else {
+            <span class="order__title">Оберіть товар</span>
+            }
+        </div>
+    </div>
+    }
+</div>

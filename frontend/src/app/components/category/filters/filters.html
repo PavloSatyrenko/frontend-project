@@ -1,0 +1,63 @@
+<div class="filters">
+    @if(state() === "loaded") { @for(filter of expandedFilters(); track filter.id) {
+    <div class="filter">
+        <div class="filter__header" (click)="toggleFilter(filter.id)">
+            <span class="filter__title">
+                {{ filter.name }} @if (filter.filtersCheckedAmount > 0) {
+                <span class="filter__amount">({{ filter.filtersCheckedAmount }})</span>
+                }
+            </span>
+
+            <span class="filter__arrow">
+                <i class="fa-solid" [ngClass]="filter.isOpened ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
+            </span>
+        </div>
+
+        @if(filter.isOpened) { @if (filter.filtersAmount > 10) {
+        <ui-input
+            class="filter__input"
+            [placeholder]="'Пошук'"
+            [value]="filter.searchValue"
+            (valueChange)="onFilterSearchValueChange(filter.id, $event)"
+            [size]="'small'"
+            [theme]="'primary'"
+        ></ui-input>
+        }
+        <div class="filter__body">
+            @for(value of filter.filtersShownValues; track value.id) {
+            <div
+                class="body__value"
+                [ngClass]="{
+                    'body__value_without-children' : !value.hasChildren,
+                    'body__value_with-children' : value.hasChildren
+                }"
+            >
+                @if (value.hasChildren) {
+                <div class="filter-checkbox" [routerLink]="['/category', value.id]">
+                    <ui-checkbox
+                        [value]="isValueSelected(value.id)"
+                        [label]="value.name"
+                        (change)="onCheckboxChange(filter.id, value)"
+                    ></ui-checkbox>
+                    <i class="fa-solid fa-chevron-right"></i>
+                </div>
+                } @else {
+                <ui-checkbox
+                    [value]="isValueSelected(value.id)"
+                    [label]="value.name"
+                    (change)="onCheckboxChange(filter.id, value)"
+                ></ui-checkbox>
+                }
+            </div>
+            } @if (filter.filtersShownValues.length === 0) {
+            <span class="body__empty">Результатів пошуку немає</span>
+            }
+        </div>
+        }
+    </div>
+    } } @else if(state() === "loading") {
+    <div class="filters__loader-wrapper">
+        <div class="filters__loader"></div>
+    </div>
+    }
+</div>

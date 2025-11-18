@@ -1,0 +1,156 @@
+.message {
+    position: fixed;
+    top: calc(var(--header-height));
+    right: 20px;
+    z-index: var(--z-index-message);
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    width: 340px;
+    height: 102px;
+    padding: 12px;
+    padding-right: 50px;
+    font-size: 14px;
+    pointer-events: none;
+    border-radius: 16px;
+    opacity: 0;
+    transition: opacity 0.3s, top 0.3s;
+}
+
+@media screen and (max-width: 565px) {
+    .message {
+        max-width: 90%;
+        height: auto;
+        padding: 10px 6px;
+        padding-right: 50px;
+    }
+}
+
+.message_visible {
+    top: calc(var(--header-height) + 20px);
+    pointer-events: all;
+    opacity: 1;
+}
+
+.message_type_success {
+    color: var(--success-border-color);
+    background-color: var(--success-background-color);
+    border: 2px solid var(--success-border-color);
+}
+
+.message_type_info {
+    color: var(--info-border-color);
+    background-color: var(--info-background-color);
+    border: 2px solid var(--info-border-color);
+}
+
+.message_type_error {
+    color: var(--error-border-color);
+    background-color: var(--error-background-color);
+    border: 2px solid var(--error-border-color);
+}
+
+.message_with_button {
+    width: 430px;
+}
+
+.message__icon {
+    flex-shrink: 0;
+    width: 30px;
+    font-size: 24px;
+}
+
+.message__container {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    width: 100%;
+}
+
+.container__header {
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.container__main {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    justify-content: space-between;
+    height: 48px;
+}
+
+@media screen and (max-width: 565px) {
+    .container__main {
+        flex-direction: column;
+        height: 100%;
+    }
+}
+
+.main__text {
+    max-width: 196px;
+    max-height: 48px;
+    overflow: auto;
+}
+
+@media screen and (max-width: 565px) {
+    .main__text {
+        max-width: 100%;
+        max-height: 54px;
+    }
+}
+
+.main__text::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+}
+
+.main__button {
+    flex-shrink: 0;
+    width: 130px;
+    height: 30px;
+    font-weight: 700;
+    cursor: pointer;
+    background-color: transparent;
+    border: 0;
+    border-radius: 8px;
+}
+
+.main__button:hover {
+    filter: brightness(0.8);
+}
+
+.message_type_success .main__button {
+    color: var(--success-border-color);
+    border: 2px solid var(--success-border-color)
+}
+
+.message_type_info .main__button {
+    color: var(--info-border-color);
+    border: 2px solid var(--info-border-color)
+}
+
+.message_type_error .main__button {
+    color: var(--error-border-color);
+    border: 2px solid var(--error-border-color)
+}
+
+.cross-button {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.message_type_success .cross-button {
+    color: var(--success-border-color)
+}
+
+.message_type_info .cross-button {
+    color: var(--info-border-color)
+}
+
+.message_type_error .cross-button {
+    color: var(--error-border-color)
+}

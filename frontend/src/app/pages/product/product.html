@@ -1,0 +1,162 @@
+<div class="product container">
+    <div class="product__gallery">
+        @if(isProductLengthMoreThanOne()) {
+        <div class="product__thumbnails product-thumbnails">
+            @for (image of product()!.image; track image) {
+            <div
+                class="product-thumbnails__thumbnail"
+                [ngClass]="{'product-thumbnails__thumbnail_active': image === selectedImage()}"
+                (click)="selectImage(image)"
+            >
+                <img class="product-thumbnails__image" [src]="image" [alt]="product()?.name" />
+            </div>
+            }
+        </div>
+        }
+
+        <div class="product__image product-image">
+            <img class="product-image__image" [src]="productImageUrl()" [alt]="product()?.name" />
+            @if(product()?.discount) {
+            <span class="product-image__discount"> -{{ product()!.discount }}% </span>
+            }
+        </div>
+    </div>
+
+    <div class="product__info product-info">
+        <div class="product-info__title title">
+            <div class="title__manufacturer-wrapper manufacturer-wrapper">
+                <span class="manufacturer-wrapper__manufacturer"> {{ product()?.manufacturer }} </span>
+
+                <span class="manufacturer-wrapper__code"> {{ product()?.code }} </span>
+            </div>
+
+            <span class="title__name"> {{ product()?.name ?? "" | formatProductName }} </span>
+        </div>
+
+        <div class="product-info__price-wrapper">
+            <div class="price-wrapper__info price-info">
+                <div class="price-info__price">
+                    <span class="price__full-price" [ngClass]="{ 'price__full-price_inactive' : product()?.discount }">
+                        {{ product()?.price?.toFixed(2) }} @if (!product()?.discount) {
+                        <span class="price-currency">грн</span>
+                        }
+                    </span>
+                    @if (product()?.discount) {
+                    <span class="price__discount-price">
+                        {{ discountedPrice().toFixed(2) }}
+                        <span class="price-currency">грн</span>
+                    </span>
+                    }
+                </div>
+
+                @if (product()?.availability == AvailabilityEnum.Available) { @if( product()?.daysBeforeDelivery == 1) {
+                <span class="product__availability"> Відправимо за {{ product()!.daysBeforeDelivery }} день </span>
+                } @else if( product()?.daysBeforeDelivery && product()!.daysBeforeDelivery > 1 &&
+                product()!.daysBeforeDelivery < 5) {
+                <span class="product__availability"> Відправимо за {{ product()!.daysBeforeDelivery }} дні </span>
+                } @else if( product()?.daysBeforeDelivery && product()!.daysBeforeDelivery >= 5) {
+                <span class="product__availability"> Відправимо за {{ product()!.daysBeforeDelivery }} днів </span>
+                } @else {
+                <span class="product__availability">Є в наявності</span>
+                } } @else if (product()?.availability == AvailabilityEnum.NotAvailable) {
+                <span class="product__availability">Немає в наявності</span>
+                }
+            </div>
+
+            <div class="price-wrapper__button-wrapper">
+                <ui-button
+                    class="button-wrapper__buy-button"
+                    [type]="'primary'"
+                    [size]="'small'"
+                    [label]="'Купити'"
+                    [isDisabled]="product()?.availability == AvailabilityEnum.NotAvailable"
+                    (click)="buyProduct()"
+                ></ui-button>
+
+                <ui-button
+                    [icon]="product()?.isFavorite ? 'fa-solid fa-heart' : 'fa-regular fa-heart'"
+                    [type]="'primary-clear'"
+                    [size]="'small'"
+                    (click)="toggleFavorite()"
+                ></ui-button>
+            </div>
+        </div>
+
+        <div class="product-info__delivery">
+            <ui-title [size]="'small'" [title]="'Доставка'"></ui-title>
+
+            <div class="delivery__item delivery-item">
+                <span class="delivery-item__icon"></span>
+                <span class="delivery-item__name">
+                    Самовивіз з магазину - м.Миколаїв, просп. Миру 1/1, біля Велмарт
+                </span>
+            </div>
+
+            <div class="delivery__item delivery-item">
+                <span class="delivery-item__icon"></span>
+                <span class="delivery-item__name">Нова пошта - кур'єр</span>
+            </div>
+
+            <div class="delivery__item delivery-item">
+                <span class="delivery-item__icon"></span>
+                <span class="delivery-item__name">Нова пошта - відділення</span>
+            </div>
+
+            <div class="delivery__item delivery-item">
+                <span class="delivery-item__icon"></span>
+                <span class="delivery-item__name">Нова пошта - поштомат</span>
+            </div>
+        </div>
+
+        <div class="product-info__payment">
+            <ui-title [size]="'small'" [title]="'Оплата'"></ui-title>
+
+            <div class="payment__item payment-item">
+                <span class="payment-item__icon"></span>
+                <span class="payment-item__name">Оплата онлайн через менеджера</span>
+            </div>
+
+            <div class="payment__item payment-item">
+                <span class="payment-item__icon"></span>
+                <span class="payment-item__name">Оплата при отриманні (самовивіз)</span>
+            </div>
+
+            <div class="payment__item payment-item">
+                <span class="payment-item__icon"></span>
+                <span class="payment-item__name">Накладеним платежем через Нову Пошту</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (recommended().length) {
+<div class="product__recommended container">
+    <ui-title class="recommended__title" [size]="'medium'" [title]="'Рекомендовані товари'"></ui-title>
+
+    <div class="products__gallery">
+        <ui-button
+            class="gallery__arrow gallery__arrow_left"
+            [icon]="'fa-solid fa-chevron-left'"
+            [size]="'small'"
+            [type]="'primary-line'"
+            (click)="scrollProductsList('left')"
+        ></ui-button>
+
+        <div #productsList class="recommended__list">
+            @for (product of recommended(); track product.id) {
+            <div class="recommended__item">
+                <ui-product-card [(products)]="recommended" [productId]="product.id"></ui-product-card>
+            </div>
+            }
+        </div>
+
+        <ui-button
+            class="gallery__arrow gallery__arrow_right"
+            [icon]="'fa-solid fa-chevron-right'"
+            [size]="'small'"
+            [type]="'primary-line'"
+            (click)="scrollProductsList('right')"
+        ></ui-button>
+    </div>
+</div>
+}
