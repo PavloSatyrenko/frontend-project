@@ -1,6 +1,6 @@
 <div class="config">
     <div class="config__container">
-        <ui-title [title]="'Знижки ролей'" [size]="'medium'" [theme]="'primary'"></ui-title>
+        <ui-title [title]="'Націнки ролей'" [size]="'medium'" [theme]="'primary'"></ui-title>
 
         @for (item of configRoleDiscount(); track item.id) {
         <div class="config__item">
@@ -106,7 +106,7 @@
     </div>
 
     <div class="config__container">
-        <ui-title [title]="'Контакти'" [size]="'medium'" [theme]="'primary'"></ui-title>
+        <ui-title [title]="'Контакти відправника'" [size]="'medium'" [theme]="'primary'"></ui-title>
 
         @if (configTypeEditing() == "nova") {
         <div class="config__row config-row config-row_materials">
