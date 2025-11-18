@@ -26,7 +26,7 @@ export class VinSearch {
             return;
         }
 
-        if (this.phone().slice(4) == "" || this.phone().slice(4).length != 9) {
+        if (this.phone() == "" || this.phone().length != 10) {
             this.messageService.showMessage("error", "Помилка вводу", "Телефон введенно некоректно.");
             return;
         }
